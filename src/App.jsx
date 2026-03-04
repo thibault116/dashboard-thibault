@@ -1,8 +1,3 @@
-# Code App.jsx — Version responsive (mobile + PC)
-
-Copie tout le code ci-dessous et colle-le dans GitHub > src > App.jsx
-
-```
 import { useState, useEffect } from "react";
 
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -322,4 +317,3 @@ export default function Dashboard() {
     </div>
   );
 }
-```
