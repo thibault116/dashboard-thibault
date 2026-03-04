@@ -1,3 +1,8 @@
+# Code App.jsx — Version responsive (mobile + PC)
+
+Copie tout le code ci-dessous et colle-le dans GitHub > src > App.jsx
+
+```
 import { useState, useEffect } from "react";
 
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -88,15 +93,7 @@ export default function Dashboard() {
   const tabLabels = { brief: "Brief", tasks: "Tâches", content: "Contenu", objectives: "Objectifs", stats: "Stats" };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#0a0a0a",
-      fontFamily: "'Georgia', serif",
-      color: "#E8D5A3",
-      maxWidth: "600px",
-      margin: "0 auto",
-      paddingBottom: "80px",
-    }}>
+    <div style={{ minHeight: "100vh", background: "#0a0a0a", fontFamily: "'Georgia', serif", color: "#E8D5A3", paddingBottom: "80px" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -116,50 +113,45 @@ export default function Dashboard() {
           animation: shimmer 3s infinite;
         }
         @keyframes shimmer { 0%{background-position:200%} 100%{background-position:-200%} }
+        .inner { max-width: 960px; margin: 0 auto; padding: 0 16px; }
+        .content-inner { max-width: 960px; margin: 0 auto; padding: 16px; }
+        @media (min-width: 768px) {
+          .content-inner { padding: 28px 32px; }
+          .brief-grid { display: grid !important; grid-template-columns: 1fr 1fr; gap: 16px; }
+          .stats-inline { grid-template-columns: repeat(4, 1fr) !important; }
+        }
       `}</style>
 
-      {/* Header */}
-      <div style={{
-        background: "linear-gradient(180deg, rgba(255,215,0,0.08) 0%, transparent 100%)",
-        borderBottom: "1px solid rgba(255,215,0,0.15)",
-        padding: "20px 16px 16px",
-      }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "9px", letterSpacing: "3px", color: "#806040", marginBottom: "3px", textTransform: "uppercase" }}>
-              L'Archipel
+      <div style={{ background: "linear-gradient(180deg, rgba(255,215,0,0.08) 0%, transparent 100%)", borderBottom: "1px solid rgba(255,215,0,0.15)", padding: "20px 0 16px" }}>
+        <div className="inner">
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div>
+              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "9px", letterSpacing: "3px", color: "#806040", marginBottom: "3px", textTransform: "uppercase" }}>L'Archipel</div>
+              <div className="shimmer" style={{ fontFamily: "'Cinzel', serif", fontSize: "20px", fontWeight: "700" }}>{greeting} 👑</div>
+              <div style={{ fontSize: "12px", color: "#806040", marginTop: "2px", fontFamily: "'Lato', sans-serif" }}>{dateStr}</div>
             </div>
-            <div className="shimmer" style={{ fontFamily: "'Cinzel', serif", fontSize: "20px", fontWeight: "700" }}>
-              {greeting} 👑
-            </div>
-            <div style={{ fontSize: "12px", color: "#806040", marginTop: "2px", fontFamily: "'Lato', sans-serif" }}>{dateStr}</div>
-          </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontFamily: "'Cinzel', serif", fontSize: "20px", color: "#FFD700" }}>{timeStr}</div>
-            <div style={{ fontSize: "11px", color: "#806040", fontFamily: "'Lato', sans-serif", marginTop: "2px" }}>
-              {completedTasks}/{tasks.length} tâches
+            <div style={{ textAlign: "right" }}>
+              <div style={{ fontFamily: "'Cinzel', serif", fontSize: "20px", color: "#FFD700" }}>{timeStr}</div>
+              <div style={{ fontSize: "11px", color: "#806040", fontFamily: "'Lato', sans-serif", marginTop: "2px" }}>{completedTasks}/{tasks.length} tâches</div>
             </div>
           </div>
-        </div>
-        <div style={{ height: "2px", background: "rgba(255,215,0,0.1)", marginTop: "12px", borderRadius: "1px" }}>
-          <div style={{ height: "100%", width: `${progressPercent}%`, background: "linear-gradient(90deg, #806040, #FFD700)", transition: "width 0.5s", borderRadius: "1px" }} />
+          <div style={{ height: "2px", background: "rgba(255,215,0,0.1)", marginTop: "12px", borderRadius: "1px" }}>
+            <div style={{ height: "100%", width: `${progressPercent}%`, background: "linear-gradient(90deg, #806040, #FFD700)", transition: "width 0.5s", borderRadius: "1px" }} />
+          </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: "16px" }}>
+      <div className="content-inner">
 
         {activeTab === "brief" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+          <div className="brief-grid" style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
             <div style={{ background: "rgba(255,215,0,0.05)", border: "1px solid rgba(255,215,0,0.2)", borderRadius: "12px", padding: "14px" }}>
               <div style={{ fontFamily: "'Cinzel', serif", fontSize: "10px", color: "#FFD700", letterSpacing: "2px", marginBottom: "10px" }}>🎬 IDÉE DU JOUR</div>
-              {contentIdeas[0] && (
-                <>
-                  <div style={{ fontSize: "14px", color: "#FFD700", fontFamily: "'Lato', sans-serif", fontWeight: "700", marginBottom: "6px" }}>"{contentIdeas[0].hook}"</div>
-                  <div style={{ fontSize: "12px", color: "#C0A060", fontFamily: "'Lato', sans-serif", marginBottom: "3px" }}>📱 {contentIdeas[0].format}</div>
-                  <div style={{ fontSize: "11px", color: "#806040", fontFamily: "'Lato', sans-serif" }}>💡 {contentIdeas[0].angle}</div>
-                </>
-              )}
+              {contentIdeas[0] && (<>
+                <div style={{ fontSize: "14px", color: "#FFD700", fontFamily: "'Lato', sans-serif", fontWeight: "700", marginBottom: "6px" }}>"{contentIdeas[0].hook}"</div>
+                <div style={{ fontSize: "12px", color: "#C0A060", fontFamily: "'Lato', sans-serif", marginBottom: "3px" }}>📱 {contentIdeas[0].format}</div>
+                <div style={{ fontSize: "11px", color: "#806040", fontFamily: "'Lato', sans-serif" }}>💡 {contentIdeas[0].angle}</div>
+              </>)}
             </div>
 
             <div style={{ background: "rgba(255,215,0,0.03)", border: "1px solid rgba(255,215,0,0.15)", borderRadius: "12px", padding: "14px" }}>
@@ -192,7 +184,7 @@ export default function Dashboard() {
               ))}
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+            <div className="stats-inline" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
               {[
                 { key: "tiktok", label: "TikTok", emoji: "🎵" },
                 { key: "instagram", label: "Instagram", emoji: "📸" },
@@ -243,7 +235,7 @@ export default function Dashboard() {
               <div style={{ fontFamily: "'Cinzel', serif", fontSize: "10px", color: "#FFD700", letterSpacing: "2px" }}>🎬 IDÉES DU JOUR</div>
               <button onClick={refreshIdeas} style={{ background: "rgba(255,215,0,0.08)", border: "1px solid rgba(255,215,0,0.2)", color: "#806040", padding: "5px 12px", borderRadius: "6px", cursor: "pointer", fontFamily: "'Lato', sans-serif", fontSize: "11px" }}>🔄 Nouvelles</button>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "10px" }}>
               {contentIdeas.map((idea, i) => (
                 <div key={i} className="idea-card" style={{ background: "rgba(255,215,0,0.03)", border: "1px solid rgba(255,215,0,0.15)", borderRadius: "10px", padding: "14px" }}>
                   <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
@@ -289,7 +281,7 @@ export default function Dashboard() {
         {activeTab === "stats" && (
           <div>
             <div style={{ fontFamily: "'Cinzel', serif", fontSize: "10px", color: "#FFD700", letterSpacing: "2px", marginBottom: "14px" }}>📊 STATS QUOTIDIENNES</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "10px" }}>
               {[
                 { key: "tiktok", label: "TikTok", emoji: "🎵", desc: "Vues hier" },
                 { key: "instagram", label: "Instagram", emoji: "📸", desc: "Vues hier" },
@@ -317,42 +309,17 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* Bottom Nav */}
-      <div style={{
-        position: "fixed",
-        bottom: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
-        width: "100%",
-        maxWidth: "600px",
-        background: "rgba(10,10,10,0.95)",
-        borderTop: "1px solid rgba(255,215,0,0.15)",
-        display: "flex",
-        backdropFilter: "blur(10px)",
-      }}>
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            style={{
-              flex: 1,
-              background: activeTab === tab.id ? "rgba(255,215,0,0.1)" : "transparent",
-              border: "none",
-              borderTop: activeTab === tab.id ? "2px solid #FFD700" : "2px solid transparent",
-              color: activeTab === tab.id ? "#FFD700" : "#806040",
-              padding: "12px 0 8px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "3px",
-            }}
-          >
-            <span style={{ fontSize: "18px" }}>{tab.label}</span>
-            <span style={{ fontSize: "9px", fontFamily: "'Lato', sans-serif", letterSpacing: "0.5px" }}>{tabLabels[tab.id]}</span>
-          </button>
-        ))}
+      <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, background: "rgba(10,10,10,0.95)", borderTop: "1px solid rgba(255,215,0,0.15)", display: "flex", backdropFilter: "blur(10px)" }}>
+        <div style={{ maxWidth: "960px", margin: "0 auto", display: "flex", width: "100%" }}>
+          {tabs.map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{ flex: 1, background: activeTab === tab.id ? "rgba(255,215,0,0.1)" : "transparent", border: "none", borderTop: activeTab === tab.id ? "2px solid #FFD700" : "2px solid transparent", color: activeTab === tab.id ? "#FFD700" : "#806040", padding: "12px 0 8px", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
+              <span style={{ fontSize: "18px" }}>{tab.label}</span>
+              <span style={{ fontSize: "9px", fontFamily: "'Lato', sans-serif", letterSpacing: "0.5px" }}>{tabLabels[tab.id]}</span>
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
 }
+```
