@@ -66,11 +66,13 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .kpi-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
 
 /* INPUTS */
-input,textarea,select{font-family:'DM Mono',monospace;font-size:13px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+input,textarea,select{font-family:'DM Mono',monospace;font-size:13px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s;width:100%;-webkit-appearance:none;appearance:none;box-sizing:border-box;}
+input[type="date"]{-webkit-appearance:none;appearance:none;color:var(--text);}
+input[type="date"]::-webkit-date-and-time-value{text-align:left;}
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2);}
 textarea{resize:vertical;min-height:70px;}
 label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
-.field{display:flex;flex-direction:column;margin-bottom:12px;}
+.field{display:flex;flex-direction:column;margin-bottom:12px;min-width:0;}
 
 /* BUTTONS */
 .btn{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;letter-spacing:.3px;}
@@ -83,6 +85,14 @@ label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-t
 .btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
 .confirm{font-family:'DM Mono',monospace;font-size:11px;color:var(--cash);opacity:0;transition:opacity .3s;}
 .confirm.show{opacity:1;}
+
+/* INPUT GRID */
+.input-grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+@media(max-width:500px){
+  .input-grid-2{grid-template-columns:1fr 1fr;}
+  .input-grid-2 .field{min-width:0;}
+  .input-grid-2 input{font-size:14px;padding:8px 10px;}
+}
 
 /* FILTERS */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
@@ -288,7 +298,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <!-- Objectifs du jour -->
   <div class="card mb20">
     <div class="card-title">🎯 Objectifs du jour — à remplir le soir</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+    <div class="input-grid-2" style="margin-bottom:14px;">
       <div class="field"><label>💬 DMs à envoyer</label><input type="number" id="brief-dms-obj" placeholder="Ex: 40" min="0"></div>
       <div class="field"><label>📱 Posts à publier</label><input type="number" id="brief-posts-obj" placeholder="Ex: 5" min="0"></div>
       <div class="field"><label>💰 Objectif CA (€)</label><input type="number" id="brief-ca-obj" placeholder="Ex: 60" min="0"></div>
@@ -297,7 +307,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);margin-bottom:14px;">
       Le soir, note ce que tu as réellement fait 👇
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="input-grid-2">
       <div class="field"><label>💬 DMs réels</label><input type="number" id="brief-dms-real" placeholder="0" min="0"></div>
       <div class="field"><label>📱 Posts réels</label><input type="number" id="brief-posts-real" placeholder="0" min="0"></div>
       <div class="field"><label>💰 CA réel (€)</label><input type="number" id="brief-ca-real" placeholder="0" min="0"></div>
@@ -350,7 +360,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">✏️ Saisie du jour</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="input-grid-2">
       <div class="field"><label>📅 Date</label><input type="date" id="t-date"></div>
       <div class="field"><label>🎵 Posts TikTok</label><input type="number" id="t-tt" placeholder="0" min="0"></div>
       <div class="field"><label>📸 Posts Insta</label><input type="number" id="t-ig" placeholder="0" min="0"></div>
@@ -400,8 +410,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">📥 Saisir les vues</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;">
-      <div class="field"><label>📅 Date</label><input type="date" id="s-date" style="min-width:0;width:100%;"></div>
+    <div class="input-grid-2">
+      <div class="field"><label>📅 Date</label><input type="date" id="s-date"></div>
       <div class="field"><label>🎵 Vues TikTok</label><input type="number" id="s-tt" placeholder="0" min="0"></div>
       <div class="field"><label>📸 Vues Instagram</label><input type="number" id="s-ig" placeholder="0" min="0"></div>
     </div>
