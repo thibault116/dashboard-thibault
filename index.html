@@ -222,6 +222,11 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="nav-item" onclick="showPage('planning')"><span class="nav-icon">📅</span><span>Planning</span></div>
   <div class="sidebar-bottom">
     <div class="date-badge" id="sidebarDate"></div>
+    <div style="margin-top:12px;">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;">Clé API</div>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="font-size:10px;padding:6px 8px;width:100%;background:var(--s2);border:1px solid var(--border2);border-radius:6px;color:var(--muted2);" oninput="saveApiKey(this.value)">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-top:4px;" id="apiKeyStatus"></div>
+    </div>
   </div>
 </nav>
 
@@ -280,8 +285,19 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="card mb20">
     <div class="card-title">💡 5 idées de contenu du jour <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:6px;">générées par IA</span></div>
     <div id="aiIdeasList"><div class="empty" style="padding:20px;">Clique pour générer les idées du jour 👇</div></div>
+    <div id="apiKeySetup" style="margin-bottom:12px;display:none;">
+      <div class="field" style="margin-bottom:8px;">
+        <label>🔑 Clé API Anthropic</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="font-size:12px;">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost btn-sm" onclick="saveApiKey()">Sauvegarder la clé</button>
+        <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);" id="keyStatus"></span>
+      </div>
+    </div>
     <div class="btn-row" style="margin-top:12px;">
       <button class="btn btn-ghost" onclick="generateIdeas()" id="genBtn">✨ Générer 5 idées</button>
+      <button class="btn btn-ghost btn-sm" onclick="toggleApiKey()" id="keyBtn" style="opacity:.5;">🔑 Clé API</button>
       <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);" id="genStatus"></span>
     </div>
   </div>
@@ -593,6 +609,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('sidebarDate').innerHTML=`Semaine ${getWeek(now)}<br>${now.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`;
   renderAll();
   initCharts();
+  loadApiKey();
 });
 
 function save(){ localStorage.setItem('thibault-v3',JSON.stringify(DB)); }
@@ -705,7 +722,34 @@ function toggleTaskBrief(id){
 }
 
 // ===== IDEAS AI =====
+function saveApiKey(val){
+  if(val) localStorage.setItem('thibault-apikey', val);
+  else localStorage.removeItem('thibault-apikey');
+  updateApiKeyStatus();
+}
+
+function loadApiKey(){
+  const key=localStorage.getItem('thibault-apikey')||'';
+  if(key){
+    document.getElementById('apiKeyInput').value=key;
+    updateApiKeyStatus();
+  }
+}
+
+function updateApiKeyStatus(){
+  const key=localStorage.getItem('thibault-apikey')||'';
+  const el=document.getElementById('apiKeyStatus');
+  if(!el) return;
+  el.textContent=key?'✓ Clé enregistrée':'';
+  el.style.color='var(--cash)';
+}
+
 async function generateIdeas(){
+  const apiKey=localStorage.getItem('thibault-apikey')||'';
+  if(!apiKey){
+    document.getElementById('aiIdeasList').innerHTML='<div class="empty">⚠️ Entre ta clé API Anthropic dans la barre latérale gauche pour utiliser cette fonctionnalité.</div>';
+    return;
+  }
   const btn=document.getElementById('genBtn');
   const status=document.getElementById('genStatus');
   btn.disabled=true; btn.textContent='⏳ Génération...'; status.textContent='';
@@ -713,7 +757,7 @@ async function generateIdeas(){
   try{
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
