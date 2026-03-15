@@ -232,12 +232,19 @@ tr:hover td{background:rgba(255,255,255,.02);}
 
   <!-- IDEES IA -->
   <div class="card mb20">
-    <div class="card-title">&#128161; 5 id&#233;es de contenu du jour <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:6px;">g&#233;n&#233;r&#233;es par IA</span></div>
-    <div id="aiIdeasList"><div class="empty" style="padding:20px;">Clique pour g&#233;n&#233;rer les id&#233;es du jour &#128071;</div></div>
-    <div class="btn-row" style="margin-top:12px;">
-      <button class="btn btn-ghost" onclick="generateIdeas()" id="genBtn">&#10024; G&#233;n&#233;rer 5 id&#233;es</button>
-      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);" id="genStatus"></span>
-    </div>
+    <div class="card-title">&#128161; 5 id&#233;es de contenu du jour</div>
+    <p style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted2);margin-bottom:16px;line-height:1.6;">
+      Clique sur le bouton ci-dessous &#8212; Claude s'ouvre avec ton prompt pr&#234;t &#224; l'emploi.<br>
+      <span style="color:var(--muted);font-size:11px;">Piliers : Vlog &#183; Mindset &#183; &#201;ducatif-Vendeur</span>
+    </p>
+    <a id="claudeIdeaBtn"
+      href="#"
+      target="_blank"
+      class="btn btn-ghost"
+      style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;"
+      onclick="openClaudeIdeas(event)">
+      &#10024; G&#233;n&#233;rer mes 5 id&#233;es avec Claude
+    </a>
   </div>
 
   <!-- STATS VEILLE EN BAS -->
@@ -583,26 +590,25 @@ function renderYday(){
   document.getElementById('yst-posts').textContent=te?(te.ttP+te.igP):'—';
 }
 
-// IDEAS AI
-async function generateIdeas(){
-  const btn=document.getElementById('genBtn'),status=document.getElementById('genStatus');
-  btn.disabled=true;btn.textContent='Generation...';status.textContent='';
-  document.getElementById('aiIdeasList').innerHTML='<div class="empty">Generation en cours...</div>';
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:"Tu es un expert en creation de contenu pour TikTok et Instagram. Genere exactement 5 idees de videos percutantes pour Thibault, 15 ans, qui vend une formation business en ligne appelee L'Archipel (marketing digital, revenus en ligne, IA) pour les 13-25 ans. Reponds UNIQUEMENT en JSON valide: {\"ideas\":[{\"platform\":\"TikTok\",\"hook\":\"...\",\"description\":\"...\"},...]}"}]})});
-    const data=await resp.json();
-    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
-    const parsed=JSON.parse(text.replace(/```json|```/g,'').trim());
-    const platC={TikTok:'cp-tt',Instagram:'cp-ig','Les deux':'cp-both'};
-    document.getElementById('aiIdeasList').innerHTML=parsed.ideas.map((idea,i)=>`<div class="idea-ai-item"><div class="idea-num">${i+1}</div><div style="flex:1;"><div style="margin-bottom:4px;display:flex;gap:6px;align-items:center;"><span class="content-plat ${platC[idea.platform]||'cp-both'}">${idea.platform}</span><strong style="font-size:13px;">${idea.hook}</strong></div><div style="font-size:12px;color:var(--muted2);">${idea.description}</div></div><button class="btn btn-ghost btn-sm" onclick="addIdeaToBank('${idea.platform}','${(idea.hook+' — '+idea.description).replace(/'/g,"\\'")}')">+ Banque</button></div>`).join('');
-    status.textContent='OK';
-  }catch(e){document.getElementById('aiIdeasList').innerHTML='<div class="empty">Erreur — reessaie.</div>';status.textContent='Erreur';}
-  btn.disabled=false;btn.textContent='Regenerer 5 idees';
-}
-function addIdeaToBank(platform,text){
-  const m={'TikTok':'tt','Instagram':'ig','Les deux':'both'};
-  DB.content.push({id:Date.now(),text,platform:m[platform]||'both',status:'idea',ts:Date.now()});
-  save();alert('Ajoute a ta banque de contenu !');
+// IDEES CONTENU -> CLAUDE
+function openClaudeIdeas(e){
+  e.preventDefault();
+  const prompt = `Tu es mon assistant contenu. Je vends une formation business en ligne appelée L'Archipel sur Whop. Elle enseigne : le marketing digital, générer des revenus en ligne, le closing, l'IA et l'automatisation, la prospection par DM. Mon audience : les 13-25 ans qui veulent gagner de l'argent en ligne. Je poste sur TikTok et Instagram Reels.
+
+Mes 3 piliers de contenu sont :
+1. VLOG / Vie quotidienne — montrer ma vie d'entrepreneur, les coulisses, mes journées, mes résultats, mes échecs
+2. MINDSET — motivation, état d'esprit, ce qui différencie ceux qui réussissent, les croyances limitantes
+3. ÉDUCATIF / VENDEUR — apprendre quelque chose d'utile tout en amenant naturellement vers L'Archipel
+
+Génère-moi exactement 5 idées de vidéos courtes (TikTok/Reels) pour aujourd'hui. Répartis les idées sur les 3 piliers (pas toutes sur le même). Pour chaque idée, donne-moi :
+- Le pilier (Vlog / Mindset / Éducatif-Vendeur)
+- La plateforme (TikTok / Instagram / Les deux)
+- Le hook (première phrase, max 10 mots, ultra-accrocheuse)
+- Le format (talking head, texte à l'écran, POV, storytelling, screen recording...)
+- 3 points clés du script
+- L'appel à l'action final`;
+  const url = 'https://claude.ai/new?q=' + encodeURIComponent(prompt);
+  window.open(url, '_blank');
 }
 
 // TRACKER
