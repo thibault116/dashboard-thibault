@@ -52,7 +52,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .kpi-val{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0;line-height:1;margin-bottom:3px;}
 .c-tt .kpi-val{color:var(--tt);}.c-ig .kpi-val{color:var(--ig);}.c-cash .kpi-val{color:var(--cash);}.c-dm .kpi-val{color:var(--dm);}
 .kpi-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
-input,textarea,select{font-family:'DM Mono',monospace;font-size:13px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+input,textarea,select{font-family:'DM Mono',monospace;font-size:16px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
 input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2);}
 textarea{resize:vertical;min-height:70px;}
 label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
@@ -168,6 +168,16 @@ tr:hover td{background:rgba(255,255,255,.02);}
   .grid-2{grid-template-columns:1fr;}
   .abo-row{grid-template-columns:1fr;}
   .page-title{font-size:32px;}
+  /* Grilles de saisie : 1 colonne sur mobile */
+  .saisie-grid{grid-template-columns:1fr !important;}
+  /* Grille ajout tâche : stack vertical */
+  .task-add-row{grid-template-columns:1fr !important;}
+  .task-add-row select{width:100% !important;}
+  /* Objectifs : stack */
+  .obj-add-row{grid-template-columns:1fr !important;}
+  /* Abo inputs pleine largeur */
+  .abo-right{width:100%;}
+  .abo-inp{width:100% !important;}
 }
 @media(max-width:480px){.grid-4{grid-template-columns:1fr 1fr;}.kpi-val{font-size:32px;}}
 </style>
@@ -211,14 +221,14 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <!-- OBJECTIFS -->
   <div class="card mb20">
     <div class="card-title">&#127919; Objectifs du jour &#8212; &#224; remplir le soir</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+    <div class="saisie-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px;">
       <div class="field"><label>DMs &#224; envoyer</label><input type="number" id="brief-dms-obj" placeholder="Ex: 40" min="0"></div>
       <div class="field"><label>Posts &#224; publier</label><input type="number" id="brief-posts-obj" placeholder="Ex: 5" min="0"></div>
       <div class="field"><label>Objectif CA (&#8364;)</label><input type="number" id="brief-ca-obj" placeholder="Ex: 60" min="0"></div>
       <div class="field"><label>Formation (min)</label><input type="number" id="brief-form-obj" placeholder="Ex: 60" min="0"></div>
     </div>
     <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);margin-bottom:14px;">Le soir, note ce que tu as r&#233;ellement fait &#128071;</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="saisie-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
       <div class="field"><label>DMs r&#233;els</label><input type="number" id="brief-dms-real" placeholder="0" min="0"></div>
       <div class="field"><label>Posts r&#233;els</label><input type="number" id="brief-posts-real" placeholder="0" min="0"></div>
       <div class="field"><label>CA r&#233;el (&#8364;)</label><input type="number" id="brief-ca-real" placeholder="0" min="0"></div>
@@ -272,7 +282,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="page-header"><div><div class="page-title">Tracker</div><div class="page-sub">Saisie quotidienne</div></div></div>
   <div class="card mb20">
     <div class="card-title">&#9999;&#65039; Saisie du jour</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="saisie-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
       <div class="field"><label>Date</label><input type="date" id="t-date"></div>
       <div class="field"><label>Posts TikTok</label><input type="number" id="t-tt" placeholder="0" min="0"></div>
       <div class="field"><label>Posts Insta</label><input type="number" id="t-ig" placeholder="0" min="0"></div>
@@ -308,7 +318,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">Saisir les vues</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+    <div class="saisie-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">
       <div class="field"><label>Date</label><input type="date" id="s-date"></div>
       <div class="field"><label>Vues TikTok</label><input type="number" id="s-tt" placeholder="0" min="0"></div>
       <div class="field"><label>Vues Instagram</label><input type="number" id="s-ig" placeholder="0" min="0"></div>
@@ -346,7 +356,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="page-header"><div><div class="page-title">T&#226;ches</div><div class="page-sub" id="tasksCount">0 t&#226;che</div></div></div>
   <div class="card mb20">
     <div class="card-title">Nouvelle t&#226;che</div>
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;flex-wrap:wrap;">
+    <div class="task-add-row" style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;flex-wrap:wrap;">
       <div class="field" style="margin:0;"><input type="text" id="task-in" placeholder="Ajouter une t&#226;che..." onkeydown="if(event.key==='Enter')addTask()"></div>
       <div><select id="task-prio" style="width:110px;"><option value="high">Rouge Urgent</option><option value="med" selected>Jaune Normal</option><option value="low">Blanc Faible</option></select></div>
       <div><select id="task-cat" style="width:120px;"><option value="business">Business</option><option value="formation">Formation</option><option value="contenu">Contenu</option><option value="prospection">Prospection</option><option value="autre">Autre</option></select></div>
@@ -368,7 +378,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="page-header"><div><div class="page-title">Contenu</div><div class="page-sub">Banque d'id&#233;es TikTok &amp; Instagram</div></div></div>
   <div class="card mb20">
     <div class="card-title">Nouvelle id&#233;e</div>
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;">
+    <div class="task-add-row" style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;">
       <div class="field" style="margin:0;"><input type="text" id="cnt-in" placeholder="Ex: Comment j'ai gagn&#233; 100&#8364; &#224; 15 ans..." onkeydown="if(event.key==='Enter')addContent()"></div>
       <div><select id="cnt-plat" style="width:120px;"><option value="tt">TikTok</option><option value="ig">Instagram</option><option value="both">Les deux</option></select></div>
       <div><select id="cnt-status" style="width:110px;"><option value="idea">Idee</option><option value="todo">A faire</option><option value="done">Publie</option></select></div>
@@ -391,7 +401,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="page-header"><div><div class="page-title">Objectifs</div><div class="page-sub">Suivi de tes targets</div></div></div>
   <div class="card mb20">
     <div class="card-title">Nouvel objectif</div>
-    <div style="display:grid;grid-template-columns:1fr 110px 110px auto;gap:10px;align-items:end;">
+    <div class="obj-add-row" style="display:grid;grid-template-columns:1fr 110px 110px auto;gap:10px;align-items:end;">
       <div class="field" style="margin:0;"><input type="text" id="obj-title" placeholder="Ex: 1000&#8364; de CA ce mois"></div>
       <div class="field" style="margin:0;"><label>Actuel</label><input type="number" id="obj-cur" placeholder="0" min="0"></div>
       <div class="field" style="margin:0;"><label>Objectif</label><input type="number" id="obj-tgt" placeholder="100" min="1"></div>
