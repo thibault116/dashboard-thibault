@@ -149,6 +149,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .pr{background:rgba(255,255,255,.03);color:var(--muted);}
 .pf{background:rgba(167,139,250,.08);color:#c4b5fd;}
 .pw{background:rgba(255,255,255,.06);color:var(--muted2);}
+.pv{background:rgba(255,100,130,.12);color:#ff8fab;}
 .idea-ai-item{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;}
 .idea-ai-item:last-child{border-bottom:none;}
 .idea-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);line-height:1;min-width:24px;}
@@ -427,6 +428,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div class="card-title">L&#233;gende</div>
       <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;">
         <div style="display:flex;align-items:center;gap:10px;"><span style="width:14px;height:14px;border-radius:3px;background:rgba(56,189,248,.2);display:inline-block;"></span> Cours</div>
+        <div style="display:flex;align-items:center;gap:10px;"><span style="width:14px;height:14px;border-radius:3px;background:rgba(255,100,130,.2);display:inline-block;"></span> Vinted</div>
         <div style="display:flex;align-items:center;gap:10px;"><span style="width:14px;height:14px;border-radius:3px;background:rgba(0,229,160,.15);display:inline-block;"></span> Contenu / Business</div>
         <div style="display:flex;align-items:center;gap:10px;"><span style="width:14px;height:14px;border-radius:3px;background:rgba(167,139,250,.15);display:inline-block;"></span> Formation L'Archipel</div>
         <div style="display:flex;align-items:center;gap:10px;"><span style="width:14px;height:14px;border-radius:3px;background:rgba(251,191,36,.15);display:inline-block;"></span> Sport / Perso</div>
@@ -436,12 +438,12 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="card">
       <div class="card-title">R&#232;gles d'or</div>
       <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--muted2);">
-        <div>Jamais moins de 7h de sommeil</div>
-        <div>Formation L'Archipel = priorit&#233; soirs et WE</div>
+        <div>Vinted = priorite numero 1 chaque jour</div>
+        <div>Repondre aux messages Vinted dans les 2h max</div>
+        <div>Photos Vinted en batch — jamais une seule a la fois</div>
+        <div>Formation = les soirs + mercredi + WE</div>
         <div>Prospection un jour sur deux (alternance)</div>
-        <div>Mercredi = journ&#233;e business principale</div>
-        <div>Batch contenu le WE pour all&#233;ger la semaine</div>
-        <div>Bilan semaine = dimanche apr&#232;s-midi</div>
+        <div>Bilan semaine = dimanche 20h30</div>
       </div>
     </div>
   </div>
@@ -486,7 +488,22 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-const defaultPlan={hours:['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h30','18h00','19h30','20h30','21h30','22h00'],days:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],cells:{'08h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pp',c:'Sport'},{t:'pr',c:'Recup'}],'09h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],'10h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],'11h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Prosp. DM'}],'12h00':[{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'Fin cours\n+ poster'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'}],'13h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation + IA'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:"Formation\nL'Archipel"},{t:'pf',c:"Formation\nL'Archipel"}],'14h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2\n(poster midi)'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Tournage\nmodules'},{t:'pf',c:'Tournage\nmodules'}],'15h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM\n(jour impair)'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'SAV clients\nWhop'},{t:'pf',c:'SAV clients\nWhop'}],'16h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation\nvideos'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],'17h30':[{t:'pr',c:'Retour'},{t:'pr',c:'Retour'},{t:'pw',c:'-'},{t:'pr',c:'Retour'},{t:'pr',c:'Retour'},{t:'pw',c:'-'},{t:'pw',c:'-'}],'18h00':[{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pb',c:'Prosp. DM\n+ poster'},{t:'pb',c:'Prosp. DM\n+ poster'}],'19h30':[{t:'pf',c:"Formation\nL'Archipel"},{t:'pf',c:'Formation\nIA + modules'},{t:'pf',c:"Formation\nL'Archipel"},{t:'pf',c:"Formation\nL'Archipel"},{t:'pf',c:"Formation\nL'Archipel"},{t:'pb',c:'Contenu x1\n+ poster'},{t:'pb',c:'Contenu x1\n+ poster'}],'20h30':[{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'SAV\nWhop'},{t:'pw',c:'-'},{t:'pb',c:'Bilan\nsemaine'}],'21h30':[{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'Planif W-E'},{t:'pw',c:'-'},{t:'pw',c:'-'}],'22h00':[{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'}]}};
+const defaultPlan={hours:['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h30','18h00','19h30','20h30','21h30','22h00'],days:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],cells:{
+'08h00':[{t:'pw',c:'-'},{t:'pw',c:'-'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pr',c:'Recup'},{t:'pr',c:'Recup'}],
+'09h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos'},{t:'pv',c:'Vinted\nPhotos'}],
+'10h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
+'11h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Rep. DMs'}],
+'12h00':[{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Fin cours\n+ poster'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'}],
+'13h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pv',c:'Vinted\nAchats'},{t:'pf',c:'Formation'}],
+'14h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pp',c:'Sport'},{t:'pf',c:'Formation'}],
+'15h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pc',c:'Cours'},{t:'pp',c:'Devoir\n/ sport'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+'16h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+'17h30':[{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+'18h00':[{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pv',c:'Vinted\nMsg+annonces'},{t:'pb',c:'Prosp. DM'}],
+'19h30':[{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
+'20h30':[{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Bilan\nsemaine'}],
+'21h30':[{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'}],
+'22h00':[{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'}]}};
 
 let DB=JSON.parse(localStorage.getItem('thibault-v3')||JSON.stringify({tracker:[],stats:[],briefs:[],tasks:[],content:[],objectifs:[],abonnes:{tt:null,ig:null},planning:JSON.parse(JSON.stringify(defaultPlan)),top3:[],top3Status:{}}));
 if(!DB.planning)DB.planning=JSON.parse(JSON.stringify(defaultPlan));
@@ -554,23 +571,47 @@ function confirmTop3(){
 function closeSelectTasks(){document.getElementById('selectTasksModal').classList.remove('open');}
 function setTop3Status(id,status){
   const today=new Date().toISOString().split('T')[0];
-  DB.top3Status[id]={status,date:today};
-  if(status==='fait'){const t=DB.tasks.find(t=>t.id===id);if(t){t.done=true;t.doneDate=today;}}
+  if(status==='fait'){
+    // Cocher dans les tâches + retirer du top3
+    const t=DB.tasks.find(t=>t.id===id);
+    if(t){t.done=true;t.doneDate=today;}
+    DB.top3=DB.top3.filter(tid=>tid!==id);
+    delete DB.top3Status[id];
+  } else if(status==='reporter'){
+    DB.top3Status[id]={status:'reporter',date:today};
+  }
   save();renderTop3();renderTasks();
+}
+function retirerTop3(id){
+  DB.top3=DB.top3.filter(tid=>tid!==id);
+  delete DB.top3Status[id];
+  save();renderTop3();
 }
 function renderTop3(){
   const el=document.getElementById('top3List');
-  if(!DB.top3.length){el.innerHTML='<div class="empty" style="padding:16px;">Clique sur Selectionner pour choisir tes 3 taches prioritaires.</div>';return;}
-  const rows=DB.top3.map((id,i)=>{
-    const task=DB.tasks.find(t=>t.id===id);
-    if(!task)return '';
-    const st=DB.top3Status[id]?.status||null;
-    let badge='',cls='top3-task';
-    if(st==='fait'){badge='<span class="top3-badge b-done">Fait</span>';cls='top3-task done-today';}
-    else if(st==='reporter'){badge='<span class="top3-badge b-rep">Reporte</span>';cls='top3-task reported';}
-    return `<div class="${cls}"><div class="top3-num">${i+1}</div><div class="top3-text">${task.text}</div>${badge}${!st?`<div class="top3-actions"><button class="btn-t3 fait" onclick="setTop3Status(${id},'fait')">Fait</button><button class="btn-t3 reporter" onclick="setTop3Status(${id},'reporter')">Reporter</button></div>`:''}</div>`;
-  }).filter(Boolean).join('');
-  el.innerHTML=rows||'<div class="empty" style="padding:16px;">Taches introuvables.</div>';
+  // Affiche toujours 3 slots
+  const slots=[];
+  for(let i=0;i<3;i++){
+    const id=DB.top3[i];
+    if(!id){
+      // Slot vide
+      slots.push(`<div class="top3-task" style="border-style:dashed;opacity:.5;"><div class="top3-num">${i+1}</div><div class="top3-text" style="color:var(--muted);">— slot libre —</div><button class="btn-t3" onclick="openSelectTasks()">+ Ajouter</button></div>`);
+    } else {
+      const task=DB.tasks.find(t=>t.id===id);
+      if(!task){slots.push('');continue;}
+      const st=DB.top3Status[id]?.status||null;
+      let cls='top3-task';
+      let actions='';
+      if(st==='reporter'){
+        cls='top3-task reported';
+        actions=`<span class="top3-badge b-rep">Reporte</span><button class="btn-t3" onclick="retirerTop3(${id})" style="margin-left:6px;">Retirer</button>`;
+      } else {
+        actions=`<div class="top3-actions"><button class="btn-t3 fait" onclick="setTop3Status(${id},'fait')">Fait</button><button class="btn-t3 reporter" onclick="setTop3Status(${id},'reporter')">Reporter</button><button class="btn-t3" onclick="retirerTop3(${id})">x</button></div>`;
+      }
+      slots.push(`<div class="${cls}"><div class="top3-num">${i+1}</div><div class="top3-text">${task.text}</div>${actions}</div>`);
+    }
+  }
+  el.innerHTML=slots.join('');
 }
 
 // BRIEF
