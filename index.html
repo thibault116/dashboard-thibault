@@ -512,7 +512,8 @@ const defaultPlan={
 };
 
 let DB=JSON.parse(localStorage.getItem('thibault-v3')||JSON.stringify({tracker:[],stats:[],briefs:[],tasks:[],content:[],objectifs:[],abonnes:{tt:null,ig:null},planning:JSON.parse(JSON.stringify(defaultPlan)),top3:[],top3Status:{}}));
-if(!DB.planning)DB.planning=JSON.parse(JSON.stringify(defaultPlan));
+// Force la mise à jour du planning à chaque chargement (v4)
+DB.planning=JSON.parse(JSON.stringify(defaultPlan));
 if(!DB.top3)DB.top3=[];
 if(!DB.top3Status)DB.top3Status={};
 
