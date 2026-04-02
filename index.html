@@ -440,9 +440,10 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <div style="display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--muted2);">
         <div>Vinted = priorite numero 1 chaque jour</div>
         <div>Repondre aux messages Vinted dans les 2h max</div>
-        <div>Photos Vinted en batch — jamais une seule a la fois</div>
-        <div>Formation = les soirs + mercredi + WE</div>
-        <div>Prospection un jour sur deux (alternance)</div>
+        <div>Depot colis : mardi, jeudi, vendredi a 17h</div>
+        <div>Photos en batch — jamais une seule a la fois</div>
+        <div>Formation = sessions courtes, max 1h30 d'afilee</div>
+        <div>Coaching = mercredi 17h, 1 fois par semaine</div>
         <div>Bilan semaine = dimanche 20h30</div>
       </div>
     </div>
@@ -474,7 +475,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
       <select id="edit-day"><option value="0">Lundi</option><option value="1">Mardi</option><option value="2">Mercredi</option><option value="3">Jeudi</option><option value="4">Vendredi</option><option value="5">Samedi</option><option value="6">Dimanche</option></select>
     </div>
     <div class="field"><label>Heure</label>
-      <select id="edit-hour"><option>08h00</option><option>09h00</option><option>10h00</option><option>11h00</option><option>12h00</option><option>13h00</option><option>14h00</option><option>15h00</option><option>16h00</option><option>17h30</option><option>18h00</option><option>19h30</option><option>20h30</option><option>21h30</option><option>22h00</option></select>
+      <select id="edit-hour"><option>08h00</option><option>09h00</option><option>10h00</option><option>11h00</option><option>12h00</option><option>13h00</option><option>14h00</option><option>15h00</option><option>16h00</option><option>17h00</option><option>17h30</option><option>18h00</option><option>19h30</option><option>20h30</option><option>21h30</option></select>
     </div>
     <div class="field"><label>Contenu</label><input type="text" id="edit-content" placeholder="Ex: Formation + SAV"></div>
     <div class="field"><label>Type (couleur)</label>
@@ -488,22 +489,27 @@ tr:hover td{background:rgba(255,255,255,.02);}
 </div>
 
 <script>
-const defaultPlan={hours:['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h30','18h00','19h30','20h30','21h30','22h00'],days:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],cells:{
-'08h00':[{t:'pw',c:'-'},{t:'pw',c:'-'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pr',c:'Recup'},{t:'pr',c:'Recup'}],
-'09h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos'},{t:'pv',c:'Vinted\nPhotos'}],
-'10h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
-'11h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Rep. DMs'}],
-'12h00':[{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Fin cours\n+ poster'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'}],
-'13h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pv',c:'Vinted\nAchats'},{t:'pf',c:'Formation'}],
-'14h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pp',c:'Sport'},{t:'pf',c:'Formation'}],
-'15h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pc',c:'Cours'},{t:'pp',c:'Devoir\n/ sport'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
-'16h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
-'17h30':[{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
-'18h00':[{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pv',c:'Vinted\nMsg+annonces'},{t:'pb',c:'Prosp. DM'}],
-'19h30':[{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
-'20h30':[{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Bilan\nsemaine'}],
-'21h30':[{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'},{t:'pr',c:'SAV Whop'}],
-'22h00':[{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'}]}};
+const defaultPlan={
+  hours:['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h00','17h30','18h00','19h30','20h30','21h30'],
+  days:['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],
+  cells:{
+    '08h00':[{t:'pw',c:'-'},{t:'pw',c:'-'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pr',c:'Recup'},{t:'pr',c:'Recup'}],
+    '09h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pw',c:'Apprentissage'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos'},{t:'pv',c:'Vinted\nPhotos'}],
+    '10h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
+    '11h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Rep. DMs'}],
+    '12h00':[{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Fin cours\n+ poster'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas\n+ Vinted msg'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'}],
+    '13h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pv',c:'Vinted\nAchats+niches'},{t:'pf',c:'Formation'}],
+    '14h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu\nbatch'},{t:'pc',c:'Cours'},{t:'pb',c:'Rep. DMs'},{t:'pp',c:'Sport'},{t:'pf',c:'Formation'}],
+    '15h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pc',c:'Cours'},{t:'pp',c:'Devoir\n/ sport'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+    '16h00':[{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+    '17h00':[{t:'pr',c:'Cours'},{t:'pv',c:'Depot\ncolis Vinted'},{t:'pb',c:'Appel\ncoaching'},{t:'pv',c:'Depot\ncolis Vinted'},{t:'pv',c:'Depot\ncolis Vinted'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+    '17h30':[{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pr',c:'Retour\n+ Vinted msg'},{t:'pf',c:'Formation'},{t:'pf',c:'Formation'}],
+    '18h00':[{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pf',c:'Formation'},{t:'pv',c:'Vinted\nmsg+annonces'},{t:'pb',c:'Prosp. DM'}],
+    '19h30':[{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pv',c:'Vinted\nPhotos+annonces'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Contenu\nbatch'}],
+    '20h30':[{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Contenu\nbatch'},{t:'pb',c:'Rep. DMs'},{t:'pb',c:'Bilan\nsemaine'}],
+    '21h30':[{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'},{t:'pr',c:'...'}]
+  }
+};
 
 let DB=JSON.parse(localStorage.getItem('thibault-v3')||JSON.stringify({tracker:[],stats:[],briefs:[],tasks:[],content:[],objectifs:[],abonnes:{tt:null,ig:null},planning:JSON.parse(JSON.stringify(defaultPlan)),top3:[],top3Status:{}}));
 if(!DB.planning)DB.planning=JSON.parse(JSON.stringify(defaultPlan));
