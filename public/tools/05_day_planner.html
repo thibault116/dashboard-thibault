@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day Planner — L'Archipel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0D0F1A;--bg2:#111827;--card:#161D2E;--blue:#1A6FD4;--bluel:#5BA3FF;--white:#fff;--grey:#C8D5E8;--muted:#8892A4;--border:rgba(90,163,255,0.15)}
+body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;min-height:100vh}
+.hdr{padding:13px 22px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:17px;color:var(--bluel);letter-spacing:1px}
+.badge{font-size:11px;background:rgba(26,111,212,0.2);border:1px solid var(--border);color:var(--bluel);padding:3px 11px;border-radius:100px}
+.date-s{font-size:11px;color:var(--muted)}
+.main{max-width:900px;margin:0 auto;padding:20px 18px}
+.gc{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:18px}
+.gflex{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px}
+.fl{font-size:10px;font-weight:700;color:var(--bluel);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.ginp{background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--white);font-family:'Poppins',sans-serif;font-size:13px;outline:none;flex:1;min-width:200px}
+.ginp:focus{border-color:var(--blue)}
+.ginp::placeholder{color:var(--muted)}
+.gbtn{background:linear-gradient(135deg,var(--blue),var(--bluel));border:none;border-radius:10px;padding:9px 18px;color:var(--white);font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap}
+.gbtn:disabled{opacity:.5;cursor:not-allowed}
+.pr{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.pr span:first-child{color:var(--grey)}
+.pr span:last-child{color:var(--bluel);font-weight:700}
+.pt{background:var(--bg2);border-radius:100px;height:7px;overflow:hidden}
+.pf{height:100%;background:linear-gradient(90deg,var(--blue),var(--bluel));border-radius:100px;transition:width .4s ease}
+.zones{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.zone{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.zh{padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.zh-t{font-size:13px;font-weight:700}
+.zh-c{font-size:10px;color:var(--muted)}
+.zb{padding:10px;display:flex;flex-direction:column;gap:4px}
+.task{display:flex;gap:7px;align-items:flex-start;padding:2px 0}
+.chk{width:18px;height:18px;border-radius:4px;border:1px solid rgba(90,163,255,0.25);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .15s;margin-top:1px}
+.task-t{font-size:12px;color:var(--grey);flex:1;line-height:1.4;padding-top:1px;transition:all .2s}
+.task-t.done{text-decoration:line-through;opacity:.4;color:var(--muted)}
+.del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:0 3px;opacity:.4}
+.del:hover{opacity:1;color:#ef4444}
+.add-row{display:flex;gap:5px;margin-top:6px}
+.add-inp{flex:1;background:var(--bg2);border:1px solid rgba(90,163,255,0.12);border-radius:7px;padding:6px 9px;color:var(--white);font-family:'Poppins',sans-serif;font-size:11px;outline:none}
+.add-inp:focus{border-color:var(--blue)}
+.add-inp::placeholder{color:var(--muted)}
+.add-btn{border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-size:13px;font-weight:700}
+.eod{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px}
+.eod-t{font-family:'Outfit',sans-serif;font-weight:900;font-size:18px;margin-bottom:12px}
+.eod-flex{display:flex;gap:10px;align-items:flex-end;margin-bottom:10px}
+textarea{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--white);font-family:'Poppins',sans-serif;font-size:12px;outline:none;resize:none;line-height:1.5}
+textarea:focus{border-color:var(--blue)}
+textarea::placeholder{color:var(--muted)}
+.rbtn{background:var(--blue);border:none;border-radius:9px;padding:9px 14px;color:var(--white);font-family:'Outfit',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap}
+.rbtn:disabled{opacity:.5;cursor:not-allowed}
+.ai-r{background:rgba(26,111,212,0.08);border:1px solid rgba(90,163,255,0.15);border-radius:11px;padding:13px;margin-top:12px}
+.ail{font-size:10px;font-weight:700;color:var(--bluel);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.ait{font-size:13px;color:var(--grey);line-height:1.7}
+.spin{width:24px;height:24px;border:2px solid rgba(90,163,255,0.2);border-top-color:var(--blue);border-radius:50%;animation:sp .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:700px){.zones{grid-template-columns:1fr}}
+
+
+</style>
+</head>
+<body>
+<div class="hdr">
+  <span class="logo">L'ARCHIPEL</span>
+  <span class="date-s" id="datestr"></span>
+  <a href="index.html" style="font-size:11px;color:var(--muted);text-decoration:none;margin-right:12px">← Accueil</a><span class="badge">📅 Day Planner</span>
+</div>
+<div id="keyBar" style="display:none;align-items:center;gap:12px;padding:10px 22px;background:#1a0a0a;border-bottom:1px solid rgba(239,68,68,0.3);flex-shrink:0">
+  <div style="width:8px;height:8px;border-radius:50%;background:#ef4444;flex-shrink:0"></div>
+  <span style="font-size:12px;color:#fca5a5">Clé API manquante —</span>
+  <a href="index.html" style="font-size:12px;color:#5BA3FF;text-decoration:none;font-weight:600">← Retour à l'accueil pour configurer</a>
+</div>
+
+  <span class="api-label">CLÉ API</span>
+  <input class="api-inp" id="apiKeyInp" type="password" placeholder="sk-ant-api03-..." autocomplete="off" oninput="onApiInput(this.value)">
+  <span class="api-status" id="apiStatus">Non configurée</span>
+</div>
+<div class="main">
+  <div class="gc">
+    <div class="gflex">
+      <div style="flex:1">
+        <div class="fl">Objectif principal du jour</div>
+        <input class="ginp" id="goal" placeholder="Ex: publier 1 vidéo + relancer 5 prospects...">
+      </div>
+      <button class="gbtn" id="genbtn" onclick="genPlan()">⚡ Générer le plan</button>
+    </div>
+    <div id="prog-wrap" style="display:none">
+      <div class="pr"><span id="prog-txt">0 / 0 tâches</span><span id="prog-pct">0%</span></div>
+      <div class="pt"><div class="pf" id="pf" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="zones" id="zones"></div>
+  <div class="eod" id="eod" style="display:none">
+    <div class="eod-t">🌙 Fin de journée</div>
+    <div class="eod-flex">
+      <textarea id="refl" rows="2" placeholder="Comment s'est passée ta journée? Victoires, blocages, humeur..."></textarea>
+      <button class="rbtn" id="rbtn" onclick="getReflect()">💬 Réflexion IA</button>
+    </div>
+    <div id="ai-ref"></div>
+  </div>
+</div>
+<script>
+// API key managed by bar above
+const ZONES=[{id:'matin',label:'🌅 Matin',color:'#f59e0b'},{id:'aprem',label:'☀️ Après-midi',color:'#1A6FD4'},{id:'soir',label:'🌙 Soir business',color:'#7c3aed'}];
+let tasks={matin:[],aprem:[],soir:[]};
+
+const d=new Date();
+document.getElementById('datestr').textContent=d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});
+
+function initZones(){
+  const zc=document.getElementById('zones');zc.innerHTML='';
+  ZONES.forEach(z=>{
+    const el=document.createElement('div');el.className='zone';el.id='z-'+z.id;
+    el.innerHTML=`<div class="zh" style="border-bottom-color:${z.color}33"><span class="zh-t">${z.label}</span><span class="zh-c" id="cnt-${z.id}">0/0</span></div><div class="zb" id="zb-${z.id}"></div>`;
+    zc.appendChild(el);renderZone(z.id);
+  });
+}
+function renderZone(zid){
+  const z=ZONES.find(x=>x.id===zid);
+  const zb=document.getElementById('zb-'+zid);if(!zb)return;
+  zb.innerHTML='';
+  tasks[zid].forEach((t,i)=>{
+    const row=document.createElement('div');row.className='task';
+    row.innerHTML=`<button class="chk ${t.done?'done':''}" style="${t.done?`border-color:${z.color};background:${z.color}22;color:${z.color}`:''}" onclick="toggle('${zid}',${i})">${t.done?'✓':''}</button><span class="task-t ${t.done?'done':''}">${esc(t.text)}</span><button class="del" onclick="del('${zid}',${i})">×</button>`;
+    zb.appendChild(row);
+  });
+  const ar=document.createElement('div');ar.className='add-row';
+  ar.innerHTML=`<input class="add-inp" id="ni-${zid}" placeholder="+ Ajouter..." onkeydown="if(event.key==='Enter')addTask('${zid}')"><button class="add-btn" style="background:${z.color}22;color:${z.color};border:1px solid ${z.color}44" onclick="addTask('${zid}')">+</button>`;
+  zb.appendChild(ar);
+  updateCount(zid);updateProg();
+}
+function toggle(zid,i){tasks[zid][i].done=!tasks[zid][i].done;renderZone(zid);checkEod()}
+function del(zid,i){tasks[zid].splice(i,1);renderZone(zid)}
+function addTask(zid){const inp=document.getElementById('ni-'+zid);const t=inp.value.trim();if(!t)return;tasks[zid].push({text:t,done:false});renderZone(zid)}
+function updateCount(zid){const el=document.getElementById('cnt-'+zid);if(el)el.textContent=`${tasks[zid].filter(t=>t.done).length}/${tasks[zid].length}`}
+function updateProg(){
+  const all=Object.values(tasks).flat();const tot=all.length;const done=all.filter(t=>t.done).length;
+  const pct=tot>0?Math.round(done/tot*100):0;
+  const pw=document.getElementById('prog-wrap');if(pw&&tot>0)pw.style.display='block';
+  const pt=document.getElementById('prog-txt');if(pt)pt.textContent=`${done} / ${tot} tâches`;
+  const pp=document.getElementById('prog-pct');if(pp)pp.textContent=pct+'%';
+  const pf=document.getElementById('pf');if(pf)pf.style.width=pct+'%';
+}
+function checkEod(){document.getElementById('eod').style.display='block'}
+async function genPlan(){
+  const goal=document.getElementById('goal').value||'avancer sur le business';
+  const gb=document.getElementById('genbtn');gb.disabled=true;gb.textContent='⏳...';
+  const p=`Coach productivité pour Thibault (15 ans, entrepreneur, L'Archipel formation marketing digital, cours en journée la semaine, business le soir). Objectif du jour: "${goal}". Plan réaliste 3 zones. JSON UNIQUEMENT: {"matin":["tâche 1","tâche 2","tâche 3"],"aprem":["tâche 1","tâche 2","tâche 3"],"soir":["tâche business 1","tâche business 2","tâche business 3","tâche business 4"]}`;
+  try{
+    const r=await apiCall({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:p}]});
+    const data=await r.json();
+    const plan=JSON.parse(data.content[0].text.replace(/```json|```/g,'').trim());
+    ZONES.forEach(z=>{tasks[z.id]=(plan[z.id]||[]).map(t=>({text:t,done:false}))});
+    initZones();document.getElementById('eod').style.display='block';
+  }catch(e){alert('Erreur API. Vérifie le proxy Vercel.')}
+  gb.disabled=false;gb.textContent='♻️ Regénérer';
+}
+async function getReflect(){
+  const rb=document.getElementById('rbtn');rb.disabled=true;
+  document.getElementById('ai-ref').innerHTML='<div style="padding:10px;color:var(--muted)"><span class="spin"></span>Réflexion en cours...</div>';
+  const all=Object.values(tasks).flat();
+  const done=all.filter(t=>t.done).map(t=>t.text);
+  const notd=all.filter(t=>!t.done).map(t=>t.text);
+  const refl=document.getElementById('refl').value;
+  const p=`Coach de Thibault (15 ans, entrepreneur L'Archipel). Journée: ${done.length}/${all.length} tâches accomplies. Faites: ${done.join(', ')||'aucune'}. Non faites: ${notd.join(', ')||'aucune'}. Note de Thibault: "${refl||'rien'}". Réflexion motivante et actionnable, 3-4 phrases, style coach direct qui parle à un ado ambitieux.`;
+  try{
+    const r=await apiCall({model:'claude-sonnet-4-20250514',max_tokens:400,messages:[{role:'user',content:p}]});
+    const data=await r.json();
+    const txt=data.content[0].text;
+    document.getElementById('ai-ref').innerHTML=`<div class="ai-r"><div class="ail">Coach IA</div><div class="ait">${esc(txt)}</div></div>`;
+  }catch(e){document.getElementById('ai-ref').innerHTML='<div style="color:#ef4444;font-size:12px;padding:8px">Erreur API</div>'}
+  rb.disabled=false;
+}
+function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+initZones();
+
+
+// ===== API KEY (shared from index) =====
+var _apiKey = localStorage.getItem('archipel_api_key') || '';
+
+function apiCall(body){
+  var b = Object.assign({}, body);
+  b._apiKey = _apiKey;
+  return fetch('https://dashboard-thibault.vercel.app/api/claude', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(b)
+  });
+}
+
+// Check key on load - show warning if missing
+window.addEventListener('DOMContentLoaded', function(){
+  _apiKey = localStorage.getItem('archipel_api_key') || '';
+  var bar = document.getElementById('keyBar');
+  if(bar){
+    if(_apiKey){
+      bar.style.display = 'none';
+    } else {
+      bar.style.display = 'flex';
+    }
+  }
+});
+// ===== END API KEY =====
+</script>
+</body>
+</html>
