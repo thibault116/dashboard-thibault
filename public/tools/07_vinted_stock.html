@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Stock & Marges — Vinted</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;600;700;900&family=Poppins:wght@300;400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D0F1A;--bg2:#111827;--accent:#1A6FD4;--accent2:#5BA3FF;
+  --text:#FFFFFF;--text2:#C8D5E8;--muted:#8892A4;--border:rgba(90,163,255,0.15);
+  --card:rgba(17,24,39,0.8);--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:radial-gradient(ellipse at 20% 20%,rgba(26,111,212,.07) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 80%,rgba(91,163,255,.05) 0%,transparent 50%);
+  pointer-events:none;z-index:0;
+}
+.grid-bg{
+  position:fixed;inset:0;
+  background-image:linear-gradient(rgba(26,111,212,.04) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(26,111,212,.04) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;z-index:0;
+}
+.container{max-width:1200px;margin:0 auto;padding:28px 18px;position:relative;z-index:1;}
+
+/* HEADER */
+header{text-align:center;margin-bottom:28px;}
+.logo-tag{display:inline-block;background:rgba(26,111,212,.15);border:1px solid var(--border);color:var(--accent2);font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:12px;}
+h1{font-family:'Anton',sans-serif;font-size:clamp(30px,5vw,50px);letter-spacing:1px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;}
+.subtitle{color:var(--muted);font-family:'Poppins',sans-serif;font-size:13px;}
+
+/* GOAL */
+.goal-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 24px;margin-bottom:18px;backdrop-filter:blur(10px);}
+.goal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.goal-title{font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
+.goal-inputs{display:flex;gap:10px;align-items:center;}
+.goal-inputs input{width:120px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.goal-inputs input:focus{border-color:var(--accent);}
+.goal-inputs label{color:var(--muted);font-size:12px;white-space:nowrap;}
+.progress-wrap{height:10px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden;}
+.progress-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease;width:0%;}
+.progress-label{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--muted);font-family:'Poppins',sans-serif;}
+.progress-label .pct{font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;color:var(--accent2);}
+
+/* ALERT */
+.alert{display:none;border-radius:12px;padding:11px 16px;margin-bottom:14px;font-family:'Poppins',sans-serif;font-size:13px;align-items:center;gap:8px;}
+.alert.show{display:flex;}
+.alert-warn{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);color:var(--warning);}
+.alert-fact{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);color:var(--danger);}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:18px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;text-align:center;backdrop-filter:blur(10px);transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-value{font-family:'Outfit',sans-serif;font-size:26px;font-weight:900;color:var(--accent2);line-height:1;}
+.stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:5px;font-weight:500;}
+.stat-card.green .stat-value{color:var(--success);}
+.stat-card.yellow .stat-value{color:var(--warning);}
+.stat-card.red .stat-value{color:var(--danger);}
+
+/* SECTION */
+.section{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:14px;backdrop-filter:blur(10px);}
+.section-title{font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;color:var(--accent2);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'';width:3px;height:13px;background:var(--accent);border-radius:2px;}
+
+/* FORM ELEMENTS */
+.field{display:flex;flex-direction:column;gap:5px;}
+label{font-size:10px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;}
+input,select,textarea{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:all .2s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);background:rgba(26,111,212,.06);}
+select option{background:#1a2035;}
+textarea{resize:vertical;min-height:70px;font-family:'Poppins',sans-serif;font-size:12px;line-height:1.6;}
+
+/* CALC */
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;}
+.calc-result{display:none;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+.calc-result.show{display:grid;}
+.res-item{text-align:center;}
+.res-val{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;}
+.res-val.good{color:var(--success);}.res-val.warn{color:var(--warning);}.res-val.bad{color:var(--danger);}
+.res-label{font-size:10px;color:var(--muted);margin-top:3px;}
+.verdict{margin-top:12px;padding:10px 14px;border-radius:9px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:500;display:none;align-items:center;gap:8px;}
+.verdict.good{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--success);display:flex;}
+.verdict.warn{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);color:var(--warning);display:flex;}
+.verdict.bad{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--danger);display:flex;}
+
+/* ADD FORM */
+.add-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:12px;}
+.btn-add{padding:10px 18px;background:linear-gradient(135deg,var(--accent),#1558a8);border:none;border-radius:9px;color:white;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 5px 18px rgba(26,111,212,.35);}
+
+/* TABLE */
+.table-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+.filters{display:flex;gap:6px;flex-wrap:wrap;}
+.filter-btn{padding:5px 13px;border-radius:100px;font-size:11px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .2s;font-family:'Inter',sans-serif;}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:white;}
+.btn-sm-action{padding:6px 12px;background:rgba(26,111,212,.1);border:1px solid var(--border);border-radius:8px;color:var(--accent2);font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:500;transition:all .2s;}
+.btn-sm-action:hover{background:rgba(26,111,212,.2);}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{padding:9px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;border-bottom:1px solid var(--border);white-space:nowrap;}
+tbody tr{border-bottom:1px solid rgba(90,163,255,.06);transition:background .15s;}
+tbody tr:hover{background:rgba(26,111,212,.04);}
+tbody td{padding:10px 10px;color:var(--text2);vertical-align:middle;}
+td.name-cell{color:var(--text);font-weight:500;min-width:110px;}
+.badge{display:inline-block;padding:2px 9px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.b-dispo{background:rgba(26,111,212,.15);color:var(--accent2);border:1px solid var(--border);}
+.b-vendu{background:rgba(34,197,94,.12);color:var(--success);border:1px solid rgba(34,197,94,.25);}
+.b-stagne{background:rgba(245,158,11,.12);color:var(--warning);border:1px solid rgba(245,158,11,.25);}
+.facture-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.f-ok{background:rgba(34,197,94,.12);color:var(--success);border:1px solid rgba(34,197,94,.3);}
+.f-nok{background:rgba(239,68,68,.1);color:var(--danger);border:1px solid rgba(239,68,68,.25);}
+.f-ok:hover{background:rgba(34,197,94,.22);}
+.f-nok:hover{background:rgba(239,68,68,.18);}
+.marge-val{font-family:'Outfit',sans-serif;font-weight:800;font-size:13px;}
+.m-good{color:var(--success);}.m-warn{color:var(--warning);}.m-bad{color:var(--danger);}
+.btn-row{display:flex;gap:4px;}
+.btn-t{padding:3px 8px;border-radius:5px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;font-family:'Inter',sans-serif;white-space:nowrap;}
+.btn-t:hover{background:rgba(255,255,255,.05);color:var(--text);}
+.btn-t.t-sold{color:var(--success);border-color:rgba(34,197,94,.3);}
+.btn-t.t-sold:hover{background:rgba(34,197,94,.1);}
+.btn-t.t-inv{color:var(--accent2);border-color:rgba(91,163,255,.3);}
+.btn-t.t-inv:hover{background:rgba(26,111,212,.15);}
+.btn-t.t-del{color:var(--danger);border-color:rgba(239,68,68,.3);}
+.btn-t.t-del:hover{background:rgba(239,68,68,.1);}
+.note-cell{max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:var(--muted);cursor:help;}
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted);font-family:'Poppins',sans-serif;font-size:13px;}
+
+/* MODALS */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.overlay.show{display:flex;}
+.modal{background:#0f1629;border:1px solid var(--border);border-radius:18px;padding:26px;width:min(480px,94vw);max-height:90vh;overflow-y:auto;position:relative;}
+.modal h2{font-family:'Outfit',sans-serif;font-size:17px;font-weight:800;color:var(--text);margin-bottom:18px;}
+.modal .field{margin-bottom:11px;}
+.modal-actions{display:flex;gap:10px;margin-top:18px;}
+.btn-modal-ok{flex:1;padding:11px;background:linear-gradient(135deg,var(--accent),#1558a8);border:none;border-radius:10px;color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-modal-ok:hover{transform:translateY(-1px);}
+.btn-modal-cancel{padding:11px 16px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.btn-modal-cancel:hover{background:rgba(255,255,255,.05);}
+.close-modal{position:absolute;top:14px;right:16px;background:transparent;border:none;color:var(--muted);font-size:20px;cursor:pointer;transition:color .2s;line-height:1;}
+.close-modal:hover{color:var(--text);}
+
+/* FACTURE */
+.facture-modal{width:min(680px,96vw)!important;}
+.facture-actions{display:flex;gap:10px;margin-bottom:16px;justify-content:flex-end;}
+.btn-print{padding:9px 18px;background:var(--accent);border:none;border-radius:8px;color:white;font-size:13px;font-family:'Outfit',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-print:hover{background:#1558a8;}
+.btn-close-fact{padding:9px 16px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all .2s;}
+.btn-close-fact:hover{background:rgba(255,255,255,.05);}
+.facture-doc{background:white;color:#111;padding:36px;border-radius:10px;font-family:'Poppins',sans-serif;font-size:13px;line-height:1.7;}
+.f-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:26px;padding-bottom:18px;border-bottom:2px solid #e5e7eb;}
+.f-logo{font-family:'Anton',sans-serif;font-size:24px;color:#1A6FD4;}
+.f-logo-sub{font-size:11px;color:#9ca3af;margin-top:2px;}
+.f-meta{text-align:right;font-size:11px;color:#6b7280;}
+.f-meta strong{display:block;font-size:20px;color:#111;font-family:'Outfit',sans-serif;font-weight:900;}
+.f-parties{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+.f-partie h4{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#9ca3af;margin-bottom:5px;}
+.f-partie p{font-size:12px;color:#374151;line-height:1.6;}
+.f-table{width:100%;border-collapse:collapse;margin-bottom:20px;}
+.f-table th{background:#f9fafb;padding:9px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#6b7280;border:1px solid #e5e7eb;}
+.f-table td{padding:11px 12px;border:1px solid #e5e7eb;font-size:12px;vertical-align:top;}
+.f-totaux{text-align:right;border-top:2px solid #e5e7eb;padding-top:12px;}
+.f-line{display:flex;justify-content:flex-end;gap:40px;font-size:12px;color:#374151;margin-bottom:3px;}
+.f-total{display:flex;justify-content:flex-end;gap:40px;font-size:15px;font-weight:800;color:#1A6FD4;margin-top:8px;}
+.f-footer{margin-top:24px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:10px;color:#9ca3af;text-align:center;}
+
+@media print{
+  body *{visibility:hidden!important;}
+  #factureZone,#factureZone *{visibility:visible!important;}
+  #factureZone{position:fixed!important;inset:0!important;background:white!important;padding:30px!important;color:#000!important;}
+}
+#factureZone{display:none;}
+
+@media(max-width:600px){
+  .add-form{grid-template-columns:1fr 1fr;}
+  .stats-row{grid-template-columns:repeat(3,1fr);}
+  .f-parties{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div style="padding:10px 20px;background:rgba(17,24,39,0.9);border-bottom:1px solid rgba(90,163,255,0.15);display:flex;align-items:center;gap:12px;position:relative;z-index:10"><a href="index.html" style="font-size:12px;color:#5BA3FF;text-decoration:none;font-weight:600">← Accueil</a><span style="font-size:11px;color:#8892A4">L'Archipel Tools</span></div>
+<div class="container">
+
+<header>
+  <div class="logo-tag">📊 Vinted CRM</div>
+  <h1>STOCK & MARGES</h1>
+  <p class="subtitle">Suivi complet · Factures · Objectif mensuel · Notes acheteurs · Alertes</p>
+</header>
+
+<!-- OBJECTIF -->
+<div class="goal-card">
+  <div class="goal-top">
+    <div class="goal-title">🎯 Objectif <span id="goalMonthName"></span></div>
+    <div class="goal-inputs">
+      <label>Objectif (€)</label>
+      <input type="number" id="goalInput" placeholder="1500" oninput="saveGoal()">
+    </div>
+  </div>
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="progress-label">
+    <span id="progressLeft">0€ réalisé</span>
+    <span class="pct" id="progressPct">0%</span>
+    <span id="progressRight">Objectif : —</span>
+  </div>
+</div>
+
+<!-- ALERTES -->
+<div class="alert alert-warn" id="alertRestock">⚠️ <strong>Stock bas !</strong>&nbsp;Moins de 10 articles dispo — pense à réapprovisionner.</div>
+<div class="alert alert-fact" id="alertFacture">🧾 <strong>Factures en attente !</strong>&nbsp;<span id="alertFactureCount"></span> vente(s) sans facture faite.</div>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card green"><div class="stat-value" id="sCA">0€</div><div class="stat-label">CA Réalisé</div></div>
+  <div class="stat-card green"><div class="stat-value" id="sMargeT">0€</div><div class="stat-label">Marge Nette</div></div>
+  <div class="stat-card"><div class="stat-value" id="sDispo">0</div><div class="stat-label">En Stock</div></div>
+  <div class="stat-card yellow"><div class="stat-value" id="sStagne">0</div><div class="stat-label">Stagnants +7j</div></div>
+  <div class="stat-card"><div class="stat-value" id="sTx">0%</div><div class="stat-label">Taux de vente</div></div>
+  <div class="stat-card green"><div class="stat-value" id="sMargeMoy">0€</div><div class="stat-label">Marge Moy.</div></div>
+  <div class="stat-card red"><div class="stat-value" id="sFactures">0</div><div class="stat-label">Factures à faire</div></div>
+</div>
+
+<!-- CALCULATEUR -->
+<div class="section">
+  <div class="section-title">Calculateur de marge rapide</div>
+  <div class="calc-grid">
+    <div class="field"><label>Prix achat (€)</label><input type="number" id="cBuy" placeholder="4.50" step=".01" oninput="calcMarge()"></div>
+    <div class="field"><label>Prix vente (€)</label><input type="number" id="cSell" placeholder="14" step=".01" oninput="calcMarge()"></div>
+    <div class="field"><label>Frais port (€)</label><input type="number" id="cShip" placeholder="0" value="0" step=".01" oninput="calcMarge()"></div>
+  </div>
+  <div class="calc-result" id="calcResult">
+    <div class="res-item"><div class="res-val" id="rFrais">-</div><div class="res-label">Frais Vinted</div></div>
+    <div class="res-item"><div class="res-val" id="rMarge">-</div><div class="res-label">Marge nette</div></div>
+    <div class="res-item"><div class="res-val" id="rPct">-</div><div class="res-label">Rentabilité</div></div>
+    <div class="res-item"><div class="res-val" id="rRoi">-</div><div class="res-label">ROI</div></div>
+  </div>
+  <div class="verdict" id="verdict"></div>
+</div>
+
+<!-- AJOUTER -->
+<div class="section">
+  <div class="section-title">Ajouter un article</div>
+  <div class="add-form">
+    <div class="field"><label>Article</label><input type="text" id="aName" placeholder="Jean cargo kaki L"></div>
+    <div class="field"><label>Source</label>
+      <select id="aSource">
+        <option>Temu</option><option>AliExpress</option><option>Fournisseur</option>
+        <option>Seconde main</option><option>Bot Vinted</option>
+      </select>
+    </div>
+    <div class="field"><label>Prix achat (€)</label><input type="number" id="aBuy" placeholder="4.50" step=".01"></div>
+    <div class="field"><label>Prix vente (€)</label><input type="number" id="aSell" placeholder="14" step=".01"></div>
+    <div class="field"><label>Statut</label>
+      <select id="aStatus"><option value="dispo">Disponible</option><option value="vendu">Vendu</option></select>
+    </div>
+    <div class="field"><label>Note</label><input type="text" id="aNote" placeholder="Remarque libre..."></div>
+    <div class="field" style="justify-content:flex-end"><label>&nbsp;</label><button class="btn-add" onclick="addArticle()">+ Ajouter</button></div>
+  </div>
+</div>
+
+<!-- TABLEAU -->
+<div class="section">
+  <div class="section-title">Mon catalogue</div>
+  <div class="table-toolbar">
+    <div class="filters">
+      <button class="filter-btn active" onclick="setFilter('all',this)">Tous</button>
+      <button class="filter-btn" onclick="setFilter('dispo',this)">Disponibles</button>
+      <button class="filter-btn" onclick="setFilter('vendu',this)">Vendus</button>
+      <button class="filter-btn" onclick="setFilter('stagne',this)">⚠️ Stagnants</button>
+      <button class="filter-btn" onclick="setFilter('facture',this)">🧾 Facture à faire</button>
+    </div>
+    <button class="btn-sm-action" onclick="exportCSV()">📥 CSV</button>
+    <button class="btn-sm-action" onclick="clearAll()" style="color:var(--danger);border-color:rgba(239,68,68,.3);">🗑️ Effacer tout</button>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Article</th><th>Source</th><th>Achat</th><th>Vente</th>
+          <th>Frais</th><th>Marge</th><th>ROI</th><th>Statut</th>
+          <th>Jours</th><th>Facture</th><th>Acheteur / Note</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="stockTable"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState">Aucun article pour l'instant. Ajoute-en un ci-dessus !</div>
+  </div>
+</div>
+
+</div>
+
+<!-- MODAL VENDU -->
+<div class="overlay" id="modalSold">
+  <div class="modal">
+    <button class="close-modal" onclick="closeModal('modalSold')">×</button>
+    <h2>✅ Marquer comme vendu</h2>
+    <input type="hidden" id="soldId">
+    <div class="field"><label>Prix de vente final (€)</label><input type="number" id="soldPrice" step=".01"></div>
+    <div class="field"><label>Pseudo acheteur</label><input type="text" id="soldBuyer" placeholder="ex: user_vinted_123"></div>
+    <div class="field"><label>Évaluation acheteur</label>
+      <select id="soldTag">
+        <option value="">— Aucune —</option>
+        <option value="⭐ Super acheteur">⭐ Super acheteur</option>
+        <option value="⚡ Paiement immédiat">⚡ Paiement immédiat</option>
+        <option value="💬 Beaucoup de questions">💬 Beaucoup de questions</option>
+        <option value="⏳ A tardé à payer">⏳ A tardé à payer</option>
+        <option value="⚠️ Acheteur difficile">⚠️ Acheteur difficile</option>
+        <option value="❌ Litige / Problème">❌ Litige / Problème</option>
+      </select>
+    </div>
+    <div class="field"><label>Note libre</label><textarea id="soldNote" placeholder="Infos utiles sur cette vente..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal('modalSold')">Annuler</button>
+      <button class="btn-modal-ok" onclick="confirmSold()">Confirmer la vente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FACTURE -->
+<div class="overlay" id="modalFacture">
+  <div class="modal facture-modal">
+    <button class="close-modal" onclick="closeModal('modalFacture')">×</button>
+    <h2>🧾 Facture de vente</h2>
+    <div id="factureZone">
+      <div class="facture-actions">
+        <button class="btn-close-fact" onclick="closeModal('modalFacture')">Fermer</button>
+        <button class="btn-print" onclick="window.print()">🖨️ Imprimer / Sauvegarder PDF</button>
+      </div>
+      <div class="facture-doc" id="factureContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let articles = JSON.parse(localStorage.getItem('vinted_crm_v2')||'[]');
+let currentFilter = 'all';
+let factNum = parseInt(localStorage.getItem('vinted_fact_num')||'1');
+
+function save(){ localStorage.setItem('vinted_crm_v2',JSON.stringify(articles)); }
+function saveGoal(){ localStorage.setItem('vinted_goal',document.getElementById('goalInput').value); updateStats(); }
+
+// MARGE CALC
+function calcF(s){ return parseFloat((s*.05+.70).toFixed(2)); }
+function calcN(b,s,sh=0){ return parseFloat((s-b-calcF(s)-sh).toFixed(2)); }
+
+function calcMarge(){
+  const b=parseFloat(document.getElementById('cBuy').value);
+  const s=parseFloat(document.getElementById('cSell').value);
+  const sh=parseFloat(document.getElementById('cShip').value)||0;
+  const res=document.getElementById('calcResult'), verd=document.getElementById('verdict');
+  if(isNaN(b)||isNaN(s)||s<=0){res.classList.remove('show');verd.className='verdict';return;}
+  const f=calcF(s),m=calcN(b,s,sh),pct=((m/s)*100).toFixed(1),roi=((m/b)*100).toFixed(0);
+  res.classList.add('show');
+  const cls=m>=5?'good':m>=3?'warn':'bad';
+  document.getElementById('rFrais').className='res-val'; document.getElementById('rFrais').textContent=f+'€';
+  document.getElementById('rMarge').className='res-val '+cls; document.getElementById('rMarge').textContent=m+'€';
+  document.getElementById('rPct').className='res-val '+cls; document.getElementById('rPct').textContent=pct+'%';
+  document.getElementById('rRoi').className='res-val '+(roi>=100?'good':roi>=50?'warn':'bad'); document.getElementById('rRoi').textContent=roi+'%';
+  if(m>=5){verd.className='verdict good';verd.innerHTML='✅ Rentable — '+m+'€ net. Lance-le.';}
+  else if(m>=3){verd.className='verdict warn';verd.innerHTML='⚠️ Correct — '+m+'€ net. OK si rotation rapide.';}
+  else{verd.className='verdict bad';verd.innerHTML='❌ Pas rentable — négocie le prix achat ou remonte le prix de vente.';}
+}
+
+// ADD
+function addArticle(){
+  const name=document.getElementById('aName').value.trim();
+  const buy=parseFloat(document.getElementById('aBuy').value);
+  const sell=parseFloat(document.getElementById('aSell').value);
+  if(!name||isNaN(buy)||isNaN(sell)){alert('Nom, prix achat et prix vente obligatoires !');return;}
+  const status=document.getElementById('aStatus').value;
+  articles.unshift({
+    id:Date.now(), name,
+    source:document.getElementById('aSource').value,
+    buy, sell,
+    frais:calcF(sell), marge:calcN(buy,sell),
+    roi:Math.round((calcN(buy,sell)/buy)*100),
+    status, buyer:'', buyerTag:'',
+    note:document.getElementById('aNote').value.trim(),
+    factureFaite:status==='vendu',
+    factureNum:null,
+    dateAdded:Date.now(),
+    dateSold:status==='vendu'?new Date().toISOString().split('T')[0]:null,
+    date:new Date().toISOString().split('T')[0]
+  });
+  save(); renderTable(); updateStats();
+  ['aName','aBuy','aSell','aNote'].forEach(id=>document.getElementById(id).value='');
+}
+
+// MODAL SOLD
+function openModalSold(id){
+  const a=articles.find(x=>x.id===id);
+  document.getElementById('soldId').value=id;
+  document.getElementById('soldPrice').value=a.sell;
+  document.getElementById('soldBuyer').value=a.buyer||'';
+  document.getElementById('soldTag').value=a.buyerTag||'';
+  document.getElementById('soldNote').value=a.note||'';
+  document.getElementById('modalSold').classList.add('show');
+}
+
+function confirmSold(){
+  const id=parseInt(document.getElementById('soldId').value);
+  const sell=parseFloat(document.getElementById('soldPrice').value);
+  const a=articles.find(x=>x.id===id);
+  if(!a)return;
+  a.status='vendu';
+  if(!isNaN(sell)&&sell>0){a.sell=sell;a.frais=calcF(sell);a.marge=calcN(a.buy,sell);a.roi=Math.round((a.marge/a.buy)*100);}
+  a.buyer=document.getElementById('soldBuyer').value.trim();
+  a.buyerTag=document.getElementById('soldTag').value;
+  const noteExtra=document.getElementById('soldNote').value.trim();
+  a.note=[a.buyerTag,noteExtra].filter(Boolean).join(' · ');
+  a.dateSold=new Date().toISOString().split('T')[0];
+  a.factureFaite=false;
+  save();closeModal('modalSold');renderTable();updateStats();
+}
+
+// FACTURE
+function openFacture(id){
+  const a=articles.find(x=>x.id===id);
+  if(!a)return;
+  if(!a.factureNum){
+    a.factureNum='VT-'+String(factNum).padStart(4,'0');
+    factNum++;
+    localStorage.setItem('vinted_fact_num',factNum);
+    a.factureFaite=true;
+    save();renderTable();updateStats();
+  }
+  const date=a.dateSold||new Date().toISOString().split('T')[0];
+  document.getElementById('factureContent').innerHTML=`
+    <div class="f-header">
+      <div>
+        <div class="f-logo">VINTED SHOP</div>
+        <div class="f-logo-sub">Vendeur particulier · @thibault.digit</div>
+      </div>
+      <div class="f-meta">
+        <strong>FACTURE</strong>
+        N° ${a.factureNum}<br>Date : ${date}${a.buyer?'<br>Acheteur : '+a.buyer:''}
+      </div>
+    </div>
+    <div class="f-parties">
+      <div class="f-partie"><h4>Vendeur</h4><p>Thibault<br>Particulier · Vinted<br>Saint-Omer, France<br>@thibault.digit</p></div>
+      <div class="f-partie"><h4>Acheteur</h4><p>${a.buyer||'Acheteur Vinted'}<br>Plateforme : Vinted<br>Date de vente : ${date}</p></div>
+    </div>
+    <table class="f-table">
+      <thead><tr><th>Désignation</th><th>Qté</th><th>Prix unitaire</th><th>Total</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>${a.name}<br><span style="font-size:11px;color:#9ca3af">Source : ${a.source} · État : occasion/neuf</span></td>
+          <td style="text-align:center">1</td>
+          <td>${a.sell.toFixed(2)}€</td>
+          <td>${a.sell.toFixed(2)}€</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="f-totaux">
+      <div class="f-line"><span>Sous-total</span><span>${a.sell.toFixed(2)}€</span></div>
+      <div class="f-line"><span>TVA</span><span>Non applicable (particulier)</span></div>
+      <div class="f-line"><span>Frais Vinted (commission plateforme)</span><span>-${a.frais.toFixed(2)}€</span></div>
+      <div class="f-total"><span>MONTANT ENCAISSÉ NET</span><span>${a.marge.toFixed(2)}€</span></div>
+    </div>
+    <div class="f-footer">
+      Transaction réalisée via Vinted · Vendeur particulier non assujetti à la TVA<br>
+      Ce document est une preuve de vente à titre personnel · N° ${a.factureNum}
+    </div>
+  `;
+  document.getElementById('factureZone').style.display='block';
+  document.getElementById('modalFacture').classList.add('show');
+}
+
+function toggleFacture(id){
+  const a=articles.find(x=>x.id===id);
+  if(!a)return;
+  if(a.factureFaite&&a.factureNum){openFacture(id);}
+  else{openFacture(id);}
+}
+
+function markFactureDone(id){
+  const a=articles.find(x=>x.id===id);
+  if(!a)return;
+  a.factureFaite=!a.factureFaite;
+  save();renderTable();updateStats();
+}
+
+// STATS + GOAL
+function updateStats(){
+  const vendus=articles.filter(a=>a.status==='vendu');
+  const dispos=articles.filter(a=>a.status==='dispo');
+  const stagnes=dispos.filter(a=>getDays(a)>=7);
+  const ca=vendus.reduce((s,a)=>s+a.sell,0);
+  const mt=vendus.reduce((s,a)=>s+a.marge,0);
+  const total=articles.length;
+  const tx=total>0?Math.round((vendus.length/total)*100):0;
+  const mm=vendus.length>0?(mt/vendus.length).toFixed(1):0;
+  const afaire=vendus.filter(a=>!a.factureFaite).length;
+
+  document.getElementById('sCA').textContent=ca.toFixed(0)+'€';
+  document.getElementById('sMargeT').textContent=mt.toFixed(0)+'€';
+  document.getElementById('sDispo').textContent=dispos.length;
+  document.getElementById('sStagne').textContent=stagnes.length;
+  document.getElementById('sTx').textContent=tx+'%';
+  document.getElementById('sMargeMoy').textContent=mm+'€';
+  document.getElementById('sFactures').textContent=afaire;
+
+  // Goal
+  const goal=parseFloat(localStorage.getItem('vinted_goal'))||0;
+  const gi=document.getElementById('goalInput');
+  if(!gi.value&&goal)gi.value=goal;
+  const pct=goal>0?Math.min(Math.round((ca/goal)*100),100):0;
+  document.getElementById('progressBar').style.width=pct+'%';
+  document.getElementById('progressPct').textContent=pct+'%';
+  document.getElementById('progressLeft').textContent=ca.toFixed(0)+'€ réalisé';
+  document.getElementById('progressRight').textContent='Objectif : '+(goal?goal+'€':'—');
+  document.getElementById('progressBar').style.background=
+    pct>=100?'linear-gradient(90deg,#22c55e,#16a34a)':
+    pct>=70?'linear-gradient(90deg,var(--warning),#d97706)':
+    'linear-gradient(90deg,var(--accent),var(--accent2))';
+
+  // Alerts
+  document.getElementById('alertRestock').classList.toggle('show',dispos.length<10&&total>0);
+  document.getElementById('alertFacture').classList.toggle('show',afaire>0);
+  document.getElementById('alertFactureCount').textContent=afaire;
+}
+
+// TABLE
+function getDays(a){return Math.floor((Date.now()-a.dateAdded)/86400000);}
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function renderTable(){
+  const tbody=document.getElementById('stockTable');
+  const empty=document.getElementById('emptyState');
+  let filtered=articles.filter(a=>{
+    if(currentFilter==='all')return true;
+    if(currentFilter==='dispo')return a.status==='dispo';
+    if(currentFilter==='vendu')return a.status==='vendu';
+    if(currentFilter==='stagne')return a.status==='dispo'&&getDays(a)>=7;
+    if(currentFilter==='facture')return a.status==='vendu'&&!a.factureFaite;
+    return true;
+  });
+  empty.style.display=filtered.length===0?'block':'none';
+  tbody.innerHTML='';
+  filtered.forEach(a=>{
+    const days=getDays(a);
+    const isStagne=a.status==='dispo'&&days>=7;
+    const badgeCls=a.status==='vendu'?'b-vendu':isStagne?'b-stagne':'b-dispo';
+    const badgeTxt=a.status==='vendu'?'✓ Vendu':isStagne?'⚠ Stagne':'● Dispo';
+    const margeCls=a.marge>=5?'m-good':a.marge>=3?'m-warn':'m-bad';
+    const noteDisplay=[a.buyerTag,a.buyer,a.note].filter(Boolean).join(' · ').substring(0,40);
+
+    let factureCel;
+    if(a.status==='vendu'){
+      factureCel=a.factureFaite
+        ?`<span class="facture-badge f-ok" onclick="openFacture(${a.id})" title="Voir la facture">✓ Faite · ${a.factureNum||''}</span>&nbsp;<button class="btn-t" onclick="markFactureDone(${a.id})" title="Marquer non faite" style="font-size:9px;padding:2px 6px;color:var(--muted)">↩</button>`
+        :`<span class="facture-badge f-nok" onclick="openFacture(${a.id})">✕ À faire</span>`;
+    } else {
+      factureCel='<span style="color:var(--muted);font-size:11px">—</span>';
+    }
+
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="name-cell">${a.name}</td>
+      <td style="color:var(--muted)">${a.source}</td>
+      <td>${a.buy}€</td>
+      <td>${a.sell}€</td>
+      <td style="color:var(--muted)">${a.frais}€</td>
+      <td><span class="marge-val ${margeCls}">${a.marge}€</span></td>
+      <td style="color:${a.roi>=100?'var(--success)':a.roi>=50?'var(--warning)':'var(--danger)'}">${a.roi}%</td>
+      <td><span class="badge ${badgeCls}">${badgeTxt}</span></td>
+      <td style="color:${days>=14?'var(--danger)':days>=7?'var(--warning)':'var(--muted)'}">${days}j</td>
+      <td>${factureCel}</td>
+      <td class="note-cell" title="${[a.buyerTag,a.buyer,a.note].filter(Boolean).join(' · ')}">${noteDisplay||'—'}</td>
+      <td>
+        <div class="btn-row">
+          ${a.status!=='vendu'?`<button class="btn-t t-sold" onclick="openModalSold(${a.id})">Vendu</button>`:''}
+          ${a.status==='vendu'?`<button class="btn-t t-inv" onclick="openFacture(${a.id})">🧾</button>`:''}
+          <button class="btn-t t-del" onclick="delArticle(${a.id})">✕</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function delArticle(id){if(confirm('Supprimer ?')){articles=articles.filter(x=>x.id!==id);save();renderTable();updateStats();}}
+function clearAll(){if(confirm('Effacer tout le stock ? Irréversible.')){articles=[];save();renderTable();updateStats();}}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+
+function exportCSV(){
+  const h=['Article','Source','Achat €','Vente €','Frais €','Marge €','ROI %','Statut','Acheteur','Tag','Note','Facture','N° Facture','Date ajout','Date vente'];
+  const rows=articles.map(a=>[a.name,a.source,a.buy,a.sell,a.frais,a.marge,a.roi,a.status,a.buyer||'',a.buyerTag||'',a.note||'',a.factureFaite?'Faite':'À faire',a.factureNum||'',a.date,a.dateSold||'']);
+  const csv=[h,...rows].map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const b=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const u=URL.createObjectURL(b);
+  const l=document.createElement('a');
+  l.href=u;l.download='vinted_crm_'+new Date().toISOString().split('T')[0]+'.csv';l.click();
+}
+
+// INIT
+const months=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+document.getElementById('goalMonthName').textContent=months[new Date().getMonth()]+' '+new Date().getFullYear();
+const sg=localStorage.getItem('vinted_goal');
+if(sg)document.getElementById('goalInput').value=sg;
+renderTable();
+updateStats();
+</script>
+</body>
+</html>
