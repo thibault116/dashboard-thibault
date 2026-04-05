@@ -46,6 +46,9 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 .t-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;line-height:1.2}
 .t-desc{font-size:11px;color:var(--muted);line-height:1.6;flex:1}
 .t-arrow{font-size:11px;color:var(--bluel);font-weight:600;margin-top:2px}
+/* EDIT BUTTON */
+.edit-btn{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:7px;background:rgba(90,163,255,0.08);border:1px solid rgba(90,163,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:var(--muted);transition:all .2s;z-index:10;text-decoration:none}
+.edit-btn:hover{background:rgba(26,111,212,0.25);border-color:var(--blue);color:var(--bluel)}
 .upload-card{background:rgba(26,111,212,0.02);border:2px dashed rgba(90,163,255,0.18);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:148px;cursor:pointer;transition:all .2s;gap:6px}
 .upload-card:hover,.upload-card.drag{border-color:var(--blue);background:rgba(26,111,212,0.07)}
 .upload-card-ico{font-size:24px}
@@ -64,6 +67,19 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 .ms-n{width:18px;height:18px;border-radius:50%;background:rgba(26,111,212,0.2);border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--bluel);flex-shrink:0}
 .m-link{display:block;padding:10px;background:var(--blue);border-radius:9px;color:var(--white);text-decoration:none;font-weight:700;font-size:13px;font-family:'Outfit',sans-serif;margin-bottom:9px}
 .m-close{width:100%;background:none;border:1px solid var(--border);border-radius:9px;padding:9px;color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px}
+/* EDIT MODAL */
+.edit-modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:420px;width:90%}
+.edit-modal h2{font-family:'Outfit',sans-serif;font-weight:900;font-size:18px;margin-bottom:6px}
+.edit-modal p{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.edit-modal label{font-size:10px;font-weight:700;color:var(--bluel);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:5px}
+.edit-modal input{width:100%;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:9px;padding:9px 12px;color:var(--white);font-family:'Poppins',sans-serif;font-size:13px;outline:none;margin-bottom:14px}
+.edit-modal input:focus{border-color:var(--blue)}
+.edit-modal input::placeholder{color:#374151}
+.edit-btns{display:flex;gap:9px}
+.edit-btns button{flex:1;padding:10px;border-radius:9px;font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-save{background:var(--blue);border:none;color:var(--white)}
+.btn-save:hover{background:var(--bluel)}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted)}
 .footer{padding:14px 28px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center;flex-shrink:0}
 .footer span{color:var(--bluel)}
 @media(max-width:600px){.hdr,.api-bar,.cat-panel{padding-left:16px;padding-right:16px}.cat-tab{padding:11px 14px;font-size:12px}.tools-grid{grid-template-columns:1fr 1fr}}
@@ -106,6 +122,7 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 <div class="footer">Fait par <span>@thibault.digit</span> · L'Archipel · Tous droits réservés</div>
 <input type="file" id="fileInput" accept=".html" onchange="handleFile(this.files[0])">
 
+<!-- Modal clé API -->
 <div class="modal-ov" id="keyModal" onclick="if(event.target===this)this.classList.remove('show')">
   <div class="modal">
     <div class="m-ico">🔑</div>
@@ -121,51 +138,70 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
   </div>
 </div>
 
+<!-- Modal édition lien -->
+<div class="modal-ov" id="editModal" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="edit-modal">
+    <h2>✏️ Modifier le lien</h2>
+    <p>Colle le lien du nouvel artefact publié pour remplacer cet outil.</p>
+    <label>Nouveau lien (artefact Claude)</label>
+    <input type="text" id="editInput" placeholder="https://claude.ai/public/artifacts/...">
+    <div class="edit-btns">
+      <button class="btn-cancel" onclick="document.getElementById('editModal').classList.remove('show')">Annuler</button>
+      <button class="btn-save" onclick="saveEdit()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ===================================================
-// AJOUTER UN OUTIL : ajoute un objet dans TOOLS
-// cat: 'marketing' | 'vinted' | 'trading' | 'other'
-// needsKey: true = clé API requise / false = gratuit
-// ===================================================
 const TOOLS = [
-  { cat:'marketing', file:'08_dashboard.html',         ico:'📊', name:'Dashboard',           desc:'Brief matin, tracker quotidien, stats TikTok & Instagram, tâches et objectifs.',      needsKey:false },
-  { cat:'marketing', file:'01_closing_simulator.html', ico:'🎯', name:'Closing Simulator',   desc:"L'IA joue un prospect. Entraîne-toi au closing avec feedback coach en temps réel.",   needsKey:true  },
-  { cat:'marketing', file:'02_dm_script_lab.html',     ico:'✍️', name:'DM Script Lab',        desc:'Scripts DM sur-mesure selon le type de prospect, le ton et le plan visé.',            needsKey:true  },
-  { cat:'marketing', file:'03_call_prep.html',         ico:'📞', name:'Call Prep VIP',        desc:'Prépare chaque appel coaching : questions, objections, red flags, livrables.',        needsKey:true  },
-  { cat:'marketing', file:'04_copy_analyzer.html',     ico:'🔬', name:'Copy Analyzer',        desc:'Note ton texte sur 100 et réécrit en mieux. Page Whop, DM, bio, caption.',            needsKey:true  },
-  { cat:'marketing', file:'05_day_planner.html',       ico:'📅', name:'Day Planner',          desc:'Génère ton plan de journée, coche tes tâches, réflexion coach le soir.',              needsKey:true  },
-  { cat:'marketing', file:'06_content_brain.html',     ico:'🧠', name:'Content Brain',        desc:'Idées de vidéos TikTok/Instagram avec hook, structure et angle unique.',              needsKey:true  },
-  { cat:'vinted',    file:'06_vinted_coach.html',      ico:'💬', name:'Coach Vinted IA',      desc:'Scripts de vente, réponses aux objections, planning hebdo et stratégie.',             needsKey:true  },
-  { cat:'vinted',    file:'07_vinted_stock.html',      ico:'📦', name:'CRM Stock & Marges',   desc:'Suivi de ton stock, calcul des marges, objectifs de CA. Fonctionne sans clé API.',    needsKey:false },
+  { cat:'marketing', file:'08_dashboard.html',         url:'https://claude.ai/public/artifacts/441c527f-4f76-4218-9f17-c372adb8b99a', ico:'📊', name:'Dashboard',           desc:'Brief matin, tracker quotidien, stats TikTok & Instagram, tâches et objectifs.',      needsKey:false },
+  { cat:'marketing', file:'01_closing_simulator.html', url:'https://claude.ai/public/artifacts/3eeed04e-ef4c-411e-9c27-d73efe98818a', ico:'🎯', name:'Closing Simulator',   desc:"L'IA joue un prospect. Entraîne-toi au closing avec feedback coach en temps réel.",   needsKey:true  },
+  { cat:'marketing', file:'02_dm_script_lab.html',     url:'https://claude.ai/public/artifacts/821c7f0a-b9fb-49c4-9be6-a218b0928553', ico:'✍️', name:'DM Script Lab',        desc:'Scripts DM sur-mesure selon le type de prospect, le ton et le plan visé.',            needsKey:true  },
+  { cat:'marketing', file:'03_call_prep.html',         url:'https://claude.ai/public/artifacts/4483b7cb-7d14-4c78-b571-f113c0eb66b1', ico:'📞', name:'Call Prep VIP',        desc:'Prépare chaque appel coaching : questions, objections, red flags, livrables.',        needsKey:true  },
+  { cat:'marketing', file:'04_copy_analyzer.html',     url:'https://claude.ai/public/artifacts/89c29293-1eba-4222-bb86-d9ad0c45e425', ico:'🔬', name:'Copy Analyzer',        desc:'Note ton texte sur 100 et réécrit en mieux. Page Whop, DM, bio, caption.',            needsKey:true  },
+  { cat:'marketing', file:'05_day_planner.html',       url:'https://claude.ai/public/artifacts/cb439dec-d736-4a0e-95d5-65e42254f1af', ico:'📅', name:'Day Planner',          desc:'Génère ton plan de journée, coche tes tâches, réflexion coach le soir.',              needsKey:true  },
+  { cat:'marketing', file:'06_content_brain.html',     url:'https://claude.ai/public/artifacts/c1d656ec-f1e2-46cc-b8d8-97e2bb06fba1', ico:'🧠', name:'Content Brain',        desc:'Idées de vidéos TikTok/Instagram avec hook, structure et angle unique.',              needsKey:true  },
+  { cat:'vinted',    file:'06_vinted_coach.html',      url:'https://claude.ai/public/artifacts/a3db1e7c-dde3-435b-b9b3-4dec11d47162', ico:'💬', name:'Coach Vinted IA',      desc:'Scripts de vente, réponses aux objections, planning hebdo et stratégie.',             needsKey:true  },
+  { cat:'vinted',    file:'07_vinted_stock.html',      url:'https://claude.ai/public/artifacts/8c7e13bb-33c6-4483-85e5-0b04e9b64296', ico:'📦', name:'CRM Stock & Marges',   desc:'Suivi de ton stock, calcul des marges, objectifs de CA. Fonctionne sans clé API.',    needsKey:false },
 ];
 
+// Overrides: stocke les liens personnalisés dans localStorage
+var overrides = JSON.parse(localStorage.getItem('archipel_overrides') || '{}');
 var uploadedTools = JSON.parse(localStorage.getItem('archipel_uploaded') || '[]');
 function saveUploaded(){ localStorage.setItem('archipel_uploaded', JSON.stringify(uploadedTools)); }
+function saveOverrides(){ localStorage.setItem('archipel_overrides', JSON.stringify(overrides)); }
 
 var _uploadCat = 'other';
+var _editFile = null;
+
+function getUrl(t){
+  return overrides[t.file] || t.url;
+}
 
 function toolCard(t){
-  const onclick = t.needsKey ? `onclick="return openTool(event,'${t.file}',true)"` : '';
-  return `<a class="tool-card" href="${t.file}" ${onclick}>
+  var href = getUrl(t);
+  var clickHandler = t.needsKey ? `onclick="return openTool(event,'${href}',true)"` : `onclick="window.open('${href}','_blank')"`;
+  return `<div class="tool-card" ${t.needsKey ? `onclick="return openTool(event,'${href}',true)"` : `onclick="window.open('${href}','_blank')"`}>
+    <button class="edit-btn" onclick="openEdit(event,'${t.file}')" title="Modifier le lien">✏️</button>
     <div class="t-ico">${t.ico}</div>
     <div class="t-name">${esc(t.name)}</div>
     <div class="t-desc">${esc(t.desc)}</div>
     <div class="t-arrow">Ouvrir l'outil →</div>
-  </a>`;
+  </div>`;
 }
 
 function uploadedCard(t){
-  return `<a class="tool-card" href="${t.url}" target="_blank">
-    <button onclick="removeUpload(event,'${t.uid}')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1">✕</button>
+  return `<div class="tool-card" onclick="window.open('${t.url}','_blank')">
+    <button class="edit-btn" onclick="removeUpload(event,'${t.uid}')" title="Supprimer">✕</button>
     <div class="t-ico">${t.ico||'📄'}</div>
     <div class="t-name">${esc(t.name)}</div>
     <div class="t-desc">${esc(t.desc||'')}</div>
     <div class="t-arrow">Ouvrir →</div>
-  </a>`;
+  </div>`;
 }
 
 function uploadBtn(cat){
-  return `<div class="upload-card" 
+  return `<div class="upload-card"
     onclick="triggerUpload('${cat}')"
     ondragover="dragOver(event,this)"
     ondragleave="dragLeave(this)"
@@ -196,11 +232,35 @@ function switchCat(btn){
   document.getElementById('panel-'+btn.dataset.cat).classList.add('active');
 }
 
-function openTool(e, file, needsKey){
-  if(needsKey && !_keyValid){ e.preventDefault(); document.getElementById('keyModal').classList.add('show'); return false; }
-  return true;
+function openTool(e, url, needsKey){
+  e.stopPropagation();
+  if(needsKey && !_keyValid){ document.getElementById('keyModal').classList.add('show'); return false; }
+  window.open(url, '_blank');
+  return false;
 }
 
+// EDIT LINK
+function openEdit(e, file){
+  e.stopPropagation();
+  _editFile = file;
+  var current = overrides[file] || TOOLS.find(t=>t.file===file)?.url || '';
+  document.getElementById('editInput').value = current;
+  document.getElementById('editModal').classList.add('show');
+}
+
+function saveEdit(){
+  var val = document.getElementById('editInput').value.trim();
+  if(!val){ alert('Colle un lien valide.'); return; }
+  if(_editFile){
+    overrides[_editFile] = val;
+    saveOverrides();
+    render();
+  }
+  document.getElementById('editModal').classList.remove('show');
+  _editFile = null;
+}
+
+// UPLOAD
 function triggerUpload(cat){ _uploadCat=cat; document.getElementById('fileInput').click(); }
 function dragOver(e,el){ e.preventDefault(); el.classList.add('drag'); }
 function dragLeave(el){ el.classList.remove('drag'); }
@@ -221,7 +281,7 @@ function handleFile(file){
 }
 
 function removeUpload(e,uid){
-  e.preventDefault();e.stopPropagation();
+  e.stopPropagation();e.preventDefault();
   if(!confirm('Retirer cet outil ?')) return;
   uploadedTools=uploadedTools.filter(t=>t.uid!==uid);
   saveUploaded(); render();
@@ -237,17 +297,32 @@ function onApiInput(val){
   dot.className='api-dot checking';st.textContent='Vérification...';st.className='api-st chk';
   _timer=setTimeout(validateKey,800);
 }
+
 async function validateKey(){
   var dot=document.getElementById('apiDot'),st=document.getElementById('apiSt'),inp=document.getElementById('apiKeyInp');
   try{
-    var r=await fetch('https://dashboard-thibault.vercel.app/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:5,messages:[{role:'user',content:'Hi'}],_apiKey:_apiKey})});
+    var r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':_apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:5,messages:[{role:'user',content:'Hi'}]})
+    });
     var d=await r.json();
     if(d.content&&d.content[0]){_keyValid=true;localStorage.setItem('archipel_api_key',_apiKey);dot.className='api-dot ok';st.textContent='✓ Clé active';st.className='api-st ok';inp.className='api-inp ok';}
     else{_keyValid=false;dot.className='api-dot';st.textContent='Clé invalide';st.className='api-st err';inp.className='api-inp err';}
   }catch(e){_keyValid=false;dot.className='api-dot';st.textContent='Erreur réseau';st.className='api-st err';}
 }
+
 function toggleEye(){var i=document.getElementById('apiKeyInp');i.type=i.type==='password'?'text':'password';}
 function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// Entrée clavier dans le modal edit
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && document.getElementById('editModal').classList.contains('show')) saveEdit();
+  if(e.key==='Escape'){
+    document.getElementById('editModal').classList.remove('show');
+    document.getElementById('keyModal').classList.remove('show');
+  }
+});
 
 render();
 window.addEventListener('DOMContentLoaded',function(){
