@@ -12,7 +12,6 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 .hdr{padding:14px 28px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .logo{font-family:'Outfit',sans-serif;font-weight:900;font-size:20px;color:var(--bluel);letter-spacing:1px}
 .logo span{color:var(--muted);font-weight:400;font-size:14px}
-.hdr-sub{font-size:11px;color:var(--muted)}
 .api-bar{padding:11px 28px;background:#090d18;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
 .api-dot{width:10px;height:10px;border-radius:50%;background:var(--red);flex-shrink:0;transition:all .3s}
 .api-dot.ok{background:var(--green);box-shadow:0 0 7px rgba(34,197,94,.5)}
@@ -30,66 +29,30 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 .api-st.ok{color:var(--green)}.api-st.err{color:var(--red)}.api-st.chk{color:#f59e0b}.api-st.empty{color:var(--muted)}
 .api-help{font-size:11px;color:var(--muted)}
 .api-help a{color:var(--bluel);text-decoration:none}
-
-/* ONGLETS */
 .cat-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
 .cat-tabs::-webkit-scrollbar{display:none}
 .cat-tab{display:flex;align-items:center;gap:7px;padding:13px 22px;font-size:13px;font-weight:600;font-family:'Poppins',sans-serif;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0}
 .cat-tab:hover{color:var(--grey);background:rgba(255,255,255,0.02)}
 .cat-tab.active{color:var(--white);border-bottom-color:var(--blue);background:rgba(26,111,212,0.05)}
-.tab-ico{font-size:15px}
 .tab-count{font-size:10px;background:rgba(26,111,212,0.2);border:1px solid rgba(26,111,212,0.3);color:var(--bluel);padding:1px 7px;border-radius:100px;font-weight:700}
-
-/* PANELS */
 .main{flex:1;overflow-y:auto}
 .cat-panel{display:none;padding:24px 28px}
 .cat-panel.active{display:block}
-
-/* UPLOAD */
-.upload-zone{border:2px dashed rgba(90,163,255,0.18);border-radius:13px;padding:18px 22px;margin-bottom:24px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s;background:rgba(26,111,212,0.02)}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--blue);background:rgba(26,111,212,0.06)}
-.upload-ico{font-size:22px;flex-shrink:0}
-.upload-txt{flex:1}
-.upload-t{font-size:13px;font-weight:600;color:var(--grey);margin-bottom:2px}
-.upload-s{font-size:11px;color:var(--muted)}
-.upload-btn-s{background:rgba(26,111,212,0.15);border:1px solid rgba(26,111,212,0.3);border-radius:8px;padding:7px 14px;font-size:12px;color:var(--bluel);font-family:'Poppins',sans-serif;cursor:pointer;font-weight:600;flex-shrink:0}
-#fileInput{display:none}
-.u-items{display:flex;flex-direction:column;gap:6px;margin-top:10px}
-.u-item{display:flex;align-items:center;gap:10px;background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:7px 12px;font-size:12px}
-.u-item-name{flex:1;font-weight:600;color:var(--white)}
-.u-open{background:rgba(26,111,212,0.15);border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:11px;color:var(--bluel);text-decoration:none;font-family:'Poppins',sans-serif}
-
-/* TOOLS */
-.sec-label{font-size:10px;font-weight:700;color:var(--bluel);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:14px}
-.sec-label.muted{color:var(--muted)}
-.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px;margin-bottom:26px}
-.tool-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:19px;text-decoration:none;color:inherit;transition:all .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;cursor:pointer}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:13px}
+.tool-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;text-decoration:none;color:inherit;transition:all .2s;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;cursor:pointer}
 .tool-card::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;background:radial-gradient(circle,rgba(26,111,212,0.07),transparent 70%);pointer-events:none}
 .tool-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,111,212,0.12)}
 .t-ico{font-size:24px;margin-bottom:2px}
 .t-name{font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;line-height:1.2}
 .t-desc{font-size:11px;color:var(--muted);line-height:1.6;flex:1}
 .t-arrow{font-size:11px;color:var(--bluel);font-weight:600;margin-top:2px}
-.t-tag{position:absolute;top:12px;right:12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:2px 7px;border-radius:100px;background:rgba(26,111,212,0.2);border:1px solid rgba(26,111,212,0.3);color:var(--bluel)}
-.t-tag.vip{background:rgba(124,58,237,0.2);border-color:rgba(124,58,237,0.3);color:#a78bfa}
-.t-tag.free{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.3);color:var(--green)}
-
-/* COMING SOON */
-.coming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-bottom:20px}
-.c-card{background:rgba(255,255,255,0.02);border:1px dashed rgba(90,163,255,0.1);border-radius:12px;padding:15px;opacity:.5}
-.c-ico{font-size:18px;margin-bottom:5px}
-.c-name{font-size:12px;font-weight:600;color:var(--muted)}
-.c-desc{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5}
-.c-soon{font-size:9px;color:var(--muted);margin-top:5px;text-transform:uppercase;letter-spacing:1px}
-
-/* EMPTY */
-.empty-tab{text-align:center;padding:60px 20px;color:var(--muted)}
-.et-ico{font-size:36px;margin-bottom:10px}
-.et-t{font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:var(--grey);margin-bottom:6px}
-.et-s{font-size:12px;line-height:1.7;max-width:280px;margin:0 auto}
-
-/* MODAL */
-.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
+.upload-card{background:rgba(26,111,212,0.02);border:2px dashed rgba(90,163,255,0.18);border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:148px;cursor:pointer;transition:all .2s;gap:6px}
+.upload-card:hover,.upload-card.drag{border-color:var(--blue);background:rgba(26,111,212,0.07)}
+.upload-card-ico{font-size:24px}
+.upload-card-t{font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;color:var(--grey)}
+.upload-card-s{font-size:11px;color:var(--muted)}
+#fileInput{display:none}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(4px)}
 .modal-ov.show{display:flex}
 .modal{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:390px;width:90%;text-align:center}
 .m-ico{font-size:30px;margin-bottom:9px}
@@ -101,17 +64,16 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 .ms-n{width:18px;height:18px;border-radius:50%;background:rgba(26,111,212,0.2);border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--bluel);flex-shrink:0}
 .m-link{display:block;padding:10px;background:var(--blue);border-radius:9px;color:var(--white);text-decoration:none;font-weight:700;font-size:13px;font-family:'Outfit',sans-serif;margin-bottom:9px}
 .m-close{width:100%;background:none;border:1px solid var(--border);border-radius:9px;padding:9px;color:var(--muted);cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px}
-
 .footer{padding:14px 28px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);text-align:center;flex-shrink:0}
 .footer span{color:var(--bluel)}
-@media(max-width:600px){.hdr,.api-bar,.cat-panel{padding-left:16px;padding-right:16px}.cat-tab{padding:11px 14px;font-size:12px}.tools-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.hdr,.api-bar,.cat-panel{padding-left:16px;padding-right:16px}.cat-tab{padding:11px 14px;font-size:12px}.tools-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:400px){.tools-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div class="hdr">
   <div class="logo">L'ARCHIPEL <span>/ Outils IA</span></div>
-  <div class="hdr-sub">@thibault.digit</div>
 </div>
 
 <div class="api-bar">
@@ -126,60 +88,23 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 </div>
 
 <div class="cat-tabs">
-  <button class="cat-tab active" data-cat="all" onclick="switchCat(this)"><span class="tab-ico">⚡</span> Tous <span class="tab-count" id="cnt-all">8</span></button>
-  <button class="cat-tab" data-cat="marketing" onclick="switchCat(this)"><span class="tab-ico">📱</span> Marketing digital <span class="tab-count" id="cnt-marketing">6</span></button>
-  <button class="cat-tab" data-cat="vinted" onclick="switchCat(this)"><span class="tab-ico">🏷️</span> Vinted / Resell <span class="tab-count" id="cnt-vinted">2</span></button>
-  <button class="cat-tab" data-cat="trading" onclick="switchCat(this)"><span class="tab-ico">📈</span> Trading <span class="tab-count" id="cnt-trading">0</span></button>
-  <button class="cat-tab" data-cat="other" onclick="switchCat(this)"><span class="tab-ico">🔧</span> Autres <span class="tab-count" id="cnt-other">0</span></button>
+  <button class="cat-tab active" data-cat="all"       onclick="switchCat(this)">⚡ Tous <span class="tab-count" id="cnt-all">0</span></button>
+  <button class="cat-tab"        data-cat="marketing" onclick="switchCat(this)">📱 Marketing digital <span class="tab-count" id="cnt-marketing">0</span></button>
+  <button class="cat-tab"        data-cat="vinted"    onclick="switchCat(this)">🏷️ Vinted / Resell <span class="tab-count" id="cnt-vinted">0</span></button>
+  <button class="cat-tab"        data-cat="trading"   onclick="switchCat(this)">📈 Trading <span class="tab-count" id="cnt-trading">0</span></button>
+  <button class="cat-tab"        data-cat="other"     onclick="switchCat(this)">🔧 Autres <span class="tab-count" id="cnt-other">0</span></button>
 </div>
 
 <div class="main">
-
-  <div class="cat-panel active" id="panel-all">
-    <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
-      <div class="upload-ico">📁</div>
-      <div class="upload-txt"><div class="upload-t">Ajouter un outil</div><div class="upload-s">Glisse un fichier .html ici pour l'ouvrir directement</div></div>
-      <button class="upload-btn-s" onclick="event.stopPropagation();document.getElementById('fileInput').click()">Choisir</button>
-    </div>
-    <input type="file" id="fileInput" accept=".html" onchange="handleFile(this.files[0])">
-    <div class="u-items" id="uploadedItems"></div>
-    <div class="sec-label">📱 Marketing digital</div>
-    <div class="tools-grid" id="grid-marketing-all"></div>
-    <div class="sec-label">🏷️ Vinted / Resell</div>
-    <div class="tools-grid" id="grid-vinted-all"></div>
-    <div class="sec-label muted">🔒 Bientôt disponibles</div>
-    <div class="coming-grid" id="grid-coming"></div>
-  </div>
-
-  <div class="cat-panel" id="panel-marketing">
-    <div class="sec-label">📱 Marketing digital</div>
-    <div class="tools-grid" id="grid-marketing"></div>
-  </div>
-
-  <div class="cat-panel" id="panel-vinted">
-    <div class="sec-label">🏷️ Vinted / Resell</div>
-    <div class="tools-grid" id="grid-vinted"></div>
-  </div>
-
-  <div class="cat-panel" id="panel-trading">
-    <div class="empty-tab">
-      <div class="et-ico">📈</div>
-      <div class="et-t">Trading — bientôt</div>
-      <div class="et-s">Les outils trading arrivent. En attendant, glisse un fichier .html dans l'onglet "Tous" pour en ajouter un maintenant.</div>
-    </div>
-  </div>
-
-  <div class="cat-panel" id="panel-other">
-    <div class="empty-tab">
-      <div class="et-ico">🔧</div>
-      <div class="et-t">Autres outils — bientôt</div>
-      <div class="et-s">D'autres outils arrivent prochainement.</div>
-    </div>
-  </div>
-
+  <div class="cat-panel active" id="panel-all"><div class="tools-grid" id="grid-all"></div></div>
+  <div class="cat-panel" id="panel-marketing"><div class="tools-grid" id="grid-marketing"></div></div>
+  <div class="cat-panel" id="panel-vinted"><div class="tools-grid" id="grid-vinted"></div></div>
+  <div class="cat-panel" id="panel-trading"><div class="tools-grid" id="grid-trading"></div></div>
+  <div class="cat-panel" id="panel-other"><div class="tools-grid" id="grid-other"></div></div>
 </div>
 
 <div class="footer">Fait par <span>@thibault.digit</span> · L'Archipel · Tous droits réservés</div>
+<input type="file" id="fileInput" accept=".html" onchange="handleFile(this.files[0])">
 
 <div class="modal-ov" id="keyModal" onclick="if(event.target===this)this.classList.remove('show')">
   <div class="modal">
@@ -187,7 +112,7 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
     <div class="m-t">Clé API requise</div>
     <div class="m-s">Configure ta clé API Anthropic dans la barre en haut pour utiliser cet outil.</div>
     <div class="m-steps">
-      <div class="ms"><div class="ms-n">1</div><span>Va sur <strong style="color:var(--bluel)">console.anthropic.com</strong> → crée un compte</span></div>
+      <div class="ms"><div class="ms-n">1</div><span>Va sur <strong style="color:var(--bluel)">console.anthropic.com</strong> → crée un compte gratuit</span></div>
       <div class="ms"><div class="ms-n">2</div><span>Menu gauche → <strong style="color:var(--bluel)">API Keys</strong> → <strong style="color:var(--bluel)">Create Key</strong></span></div>
       <div class="ms"><div class="ms-n">3</div><span>Copie la clé <strong>(sk-ant-api03-...)</strong> et colle-la dans la barre en haut</span></div>
     </div>
@@ -198,51 +123,70 @@ body{background:var(--bg);color:var(--white);font-family:'Poppins',sans-serif;mi
 
 <script>
 // ===================================================
-// OUTILS — Pour ajouter un outil : ajoute un objet ici
+// AJOUTER UN OUTIL : ajoute un objet dans TOOLS
 // cat: 'marketing' | 'vinted' | 'trading' | 'other'
-// needsKey: true = nécessite clé API / false = gratuit
+// needsKey: true = clé API requise / false = gratuit
 // ===================================================
 const TOOLS = [
-  { cat:'marketing', file:'01_closing_simulator.html', ico:'🎯', name:'Closing Simulator',  desc:"L'IA joue un prospect. Tu t'entraînes à closer. Feedback coach après chaque message.", tag:'Vente', needsKey:true },
-  { cat:'marketing', file:'02_dm_script_lab.html',     ico:'✍️', name:'DM Script Lab',       desc:'Génère des scripts DM sur-mesure selon le type de prospect, ton et plan visé.',         tag:'Vente', needsKey:true },
-  { cat:'marketing', file:'03_call_prep.html',         ico:'📞', name:'Call Prep VIP',        desc:'Prépare chaque appel coaching : questions, objections, red flags, livrables.',           tag:'VIP',   needsKey:true, tagStyle:'vip' },
-  { cat:'marketing', file:'04_copy_analyzer.html',     ico:'🔬', name:'Copy Analyzer',        desc:'Note ton texte de vente sur 100 et le réécrit en mieux. Page Whop, DM, bio, caption.',  tag:'Copy',  needsKey:true },
-  { cat:'marketing', file:'05_day_planner.html',       ico:'📅', name:'Day Planner',          desc:'Génère ton plan de journée, coche tes tâches, réflexion coach le soir.',                tag:'Prod',  needsKey:true },
-  { cat:'marketing', file:'06_content_brain.html',     ico:'🧠', name:'Content Brain',        desc:'Génère des idées de vidéos TikTok/Instagram avec hook, structure et angle unique.',     tag:'Contenu',needsKey:true },
-  { cat:'vinted',    file:'06_vinted_coach.html',      ico:'💬', name:'Coach Vinted IA',      desc:'Scripts de vente, réponses aux objections, planning hebdo et conseils stratégie.',       tag:'IA',    needsKey:true },
-  { cat:'vinted',    file:'07_vinted_stock.html',      ico:'📦', name:'CRM Stock & Marges',   desc:'Suivi de ton stock, calcul des marges, objectifs de CA. 100% local, sans clé API.',     tag:'Gratuit',needsKey:false, tagStyle:'free' },
+  { cat:'marketing', file:'08_dashboard.html',         ico:'📊', name:'Dashboard',           desc:'Brief matin, tracker quotidien, stats TikTok & Instagram, tâches et objectifs.',      needsKey:false },
+  { cat:'marketing', file:'01_closing_simulator.html', ico:'🎯', name:'Closing Simulator',   desc:"L'IA joue un prospect. Entraîne-toi au closing avec feedback coach en temps réel.",   needsKey:true  },
+  { cat:'marketing', file:'02_dm_script_lab.html',     ico:'✍️', name:'DM Script Lab',        desc:'Scripts DM sur-mesure selon le type de prospect, le ton et le plan visé.',            needsKey:true  },
+  { cat:'marketing', file:'03_call_prep.html',         ico:'📞', name:'Call Prep VIP',        desc:'Prépare chaque appel coaching : questions, objections, red flags, livrables.',        needsKey:true  },
+  { cat:'marketing', file:'04_copy_analyzer.html',     ico:'🔬', name:'Copy Analyzer',        desc:'Note ton texte sur 100 et réécrit en mieux. Page Whop, DM, bio, caption.',            needsKey:true  },
+  { cat:'marketing', file:'05_day_planner.html',       ico:'📅', name:'Day Planner',          desc:'Génère ton plan de journée, coche tes tâches, réflexion coach le soir.',              needsKey:true  },
+  { cat:'marketing', file:'06_content_brain.html',     ico:'🧠', name:'Content Brain',        desc:'Idées de vidéos TikTok/Instagram avec hook, structure et angle unique.',              needsKey:true  },
+  { cat:'vinted',    file:'06_vinted_coach.html',      ico:'💬', name:'Coach Vinted IA',      desc:'Scripts de vente, réponses aux objections, planning hebdo et stratégie.',             needsKey:true  },
+  { cat:'vinted',    file:'07_vinted_stock.html',      ico:'📦', name:'CRM Stock & Marges',   desc:'Suivi de ton stock, calcul des marges, objectifs de CA. Fonctionne sans clé API.',    needsKey:false },
 ];
 
-const COMING = [
-  { ico:'📈', name:'Trading Analyzer',  desc:'Analyse de setup et journal de trades' },
-  { ico:'🤖', name:'Bot Vinted Auto',   desc:'Messages automatiques pour Vinted' },
-  { ico:'🎨', name:'Canva Prompt Gen',  desc:'Génère des prompts pour tes visuels' },
-  { ico:'💰', name:'Revenue Tracker',   desc:'Dashboard de revenus mensuel' },
-];
+var uploadedTools = JSON.parse(localStorage.getItem('archipel_uploaded') || '[]');
+function saveUploaded(){ localStorage.setItem('archipel_uploaded', JSON.stringify(uploadedTools)); }
 
-function toolHTML(t){
-  return `<a class="tool-card" href="${t.file}" onclick="return openTool(event,'${t.file}',${t.needsKey})">
-    <div class="t-tag ${t.tagStyle||''}">${t.tag}</div>
+var _uploadCat = 'other';
+
+function toolCard(t){
+  const onclick = t.needsKey ? `onclick="return openTool(event,'${t.file}',true)"` : '';
+  return `<a class="tool-card" href="${t.file}" ${onclick}>
     <div class="t-ico">${t.ico}</div>
-    <div class="t-name">${t.name}</div>
-    <div class="t-desc">${t.desc}</div>
+    <div class="t-name">${esc(t.name)}</div>
+    <div class="t-desc">${esc(t.desc)}</div>
+    <div class="t-arrow">Ouvrir l'outil →</div>
+  </a>`;
+}
+
+function uploadedCard(t){
+  return `<a class="tool-card" href="${t.url}" target="_blank">
+    <button onclick="removeUpload(event,'${t.uid}')" style="position:absolute;top:10px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:1">✕</button>
+    <div class="t-ico">${t.ico||'📄'}</div>
+    <div class="t-name">${esc(t.name)}</div>
+    <div class="t-desc">${esc(t.desc||'')}</div>
     <div class="t-arrow">Ouvrir →</div>
   </a>`;
 }
 
-function renderTools(){
-  const cats = ['marketing','vinted'];
+function uploadBtn(cat){
+  return `<div class="upload-card" 
+    onclick="triggerUpload('${cat}')"
+    ondragover="dragOver(event,this)"
+    ondragleave="dragLeave(this)"
+    ondrop="dropFile(event,'${cat}')">
+    <div class="upload-card-ico">➕</div>
+    <div class="upload-card-t">Ajouter un outil</div>
+    <div class="upload-card-s">Glisse un .html ici</div>
+  </div>`;
+}
+
+function render(){
+  const cats = ['all','marketing','vinted','trading','other'];
   cats.forEach(cat => {
-    const list = TOOLS.filter(t => t.cat === cat);
-    document.getElementById('cnt-'+cat).textContent = list.length;
-    document.getElementById('grid-'+cat).innerHTML = list.map(toolHTML).join('');
-    document.getElementById('grid-'+cat+'-all').innerHTML = list.map(toolHTML).join('');
+    const grid = document.getElementById('grid-'+cat);
+    if(!grid) return;
+    const tools = cat==='all' ? TOOLS : TOOLS.filter(t=>t.cat===cat);
+    const ups = cat==='all' ? uploadedTools : uploadedTools.filter(t=>t.cat===cat);
+    grid.innerHTML = tools.map(toolCard).join('') + ups.map(uploadedCard).join('') + uploadBtn(cat);
+    const cnt = document.getElementById('cnt-'+cat);
+    if(cnt) cnt.textContent = tools.length + ups.length;
   });
-  document.getElementById('cnt-all').textContent = TOOLS.length;
-  document.getElementById('cnt-trading').textContent = TOOLS.filter(t=>t.cat==='trading').length;
-  document.getElementById('cnt-other').textContent = TOOLS.filter(t=>t.cat==='other').length;
-  document.getElementById('grid-coming').innerHTML = COMING.map(c=>`
-    <div class="c-card"><div class="c-ico">${c.ico}</div><div class="c-name">${c.name}</div><div class="c-desc">${c.desc}</div><div class="c-soon">Bientôt</div></div>`).join('');
 }
 
 function switchCat(btn){
@@ -257,17 +201,42 @@ function openTool(e, file, needsKey){
   return true;
 }
 
+function triggerUpload(cat){ _uploadCat=cat; document.getElementById('fileInput').click(); }
+function dragOver(e,el){ e.preventDefault(); el.classList.add('drag'); }
+function dragLeave(el){ el.classList.remove('drag'); }
+function dropFile(e,cat){ e.preventDefault(); dragLeave(e.currentTarget); _uploadCat=cat; if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); }
+
+function handleFile(file){
+  if(!file||!file.name.endsWith('.html')){ alert('Fichier .html uniquement.'); return; }
+  var name=prompt('Nom de l\'outil :',file.name.replace('.html',''));
+  if(!name) return;
+  var desc=prompt('Description courte (optionnel) :','')||'';
+  var ico=prompt('Emoji (optionnel) :','📄')||'📄';
+  var cat=_uploadCat==='all'?'other':_uploadCat;
+  var url=URL.createObjectURL(file);
+  var uid='u'+Date.now();
+  uploadedTools.push({uid,name,desc,ico,cat,url,file:file.name});
+  saveUploaded(); render();
+  document.getElementById('fileInput').value='';
+}
+
+function removeUpload(e,uid){
+  e.preventDefault();e.stopPropagation();
+  if(!confirm('Retirer cet outil ?')) return;
+  uploadedTools=uploadedTools.filter(t=>t.uid!==uid);
+  saveUploaded(); render();
+}
+
 // API KEY
-var _apiKey=localStorage.getItem('archipel_api_key')||'', _keyValid=false, _timer=null;
+var _apiKey=localStorage.getItem('archipel_api_key')||'',_keyValid=false,_timer=null;
 
 function onApiInput(val){
-  _apiKey=val.trim(); _keyValid=false; clearTimeout(_timer);
+  _apiKey=val.trim();_keyValid=false;clearTimeout(_timer);
   var dot=document.getElementById('apiDot'),st=document.getElementById('apiSt'),inp=document.getElementById('apiKeyInp');
   if(!_apiKey){localStorage.removeItem('archipel_api_key');dot.className='api-dot';st.textContent='Non configurée';st.className='api-st empty';inp.className='api-inp';return;}
   dot.className='api-dot checking';st.textContent='Vérification...';st.className='api-st chk';
   _timer=setTimeout(validateKey,800);
 }
-
 async function validateKey(){
   var dot=document.getElementById('apiDot'),st=document.getElementById('apiSt'),inp=document.getElementById('apiKeyInp');
   try{
@@ -277,25 +246,10 @@ async function validateKey(){
     else{_keyValid=false;dot.className='api-dot';st.textContent='Clé invalide';st.className='api-st err';inp.className='api-inp err';}
   }catch(e){_keyValid=false;dot.className='api-dot';st.textContent='Erreur réseau';st.className='api-st err';}
 }
-
 function toggleEye(){var i=document.getElementById('apiKeyInp');i.type=i.type==='password'?'text':'password';}
-
-// UPLOAD
-function dragOver(e){e.preventDefault();document.getElementById('dropZone').classList.add('drag');}
-function dragLeave(){document.getElementById('dropZone').classList.remove('drag');}
-function dropFile(e){e.preventDefault();document.getElementById('dropZone').classList.remove('drag');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);}
-function handleFile(file){
-  if(!file||!file.name.endsWith('.html')){alert('Fichier .html uniquement.');return;}
-  var url=URL.createObjectURL(file);
-  var item=document.createElement('div');item.className='u-item';
-  item.innerHTML=`<span style="font-size:15px">📄</span><span class="u-item-name">${esc(file.name)}</span><a class="u-open" href="${url}" target="_blank">Ouvrir →</a>`;
-  document.getElementById('uploadedItems').appendChild(item);
-  document.getElementById('fileInput').value='';
-}
-
 function esc(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-renderTools();
+render();
 window.addEventListener('DOMContentLoaded',function(){
   _apiKey=localStorage.getItem('archipel_api_key')||'';
   var inp=document.getElementById('apiKeyInp');
