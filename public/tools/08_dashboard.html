@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Dashboard — L'Archipel</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#08080e;--s1:#0f0f18;--s2:#161620;--s3:#1e1e2a;--border:#ffffff0a;--border2:#ffffff14;--tt:#ff3358;--ig:#a78bfa;--cash:#00e5a0;--dm:#fbbf24;--blue:#38bdf8;--text:#f1f1f6;--muted:#5a5a72;--muted2:#8888a0;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4;}
+.app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-width:220px;background:var(--s1);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;padding:24px 0;transition:transform .3s;}
+.logo{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:12px;}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;background:linear-gradient(135deg,#fff 0%,#555 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;}
+.logo-sub{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;transition:all .2s;border-left:2px solid transparent;font-size:13px;font-weight:600;color:var(--muted2);}
+.nav-item:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.nav-item.active{color:var(--text);border-left-color:var(--text);background:rgba(255,255,255,.04);}
+.nav-icon{font-size:15px;width:20px;text-align:center;}
+.sidebar-bottom{margin-top:auto;padding:16px 20px;border-top:1px solid var(--border);}
+.date-badge{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);line-height:1.8;}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:12px;left:12px;z-index:200;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:18px;color:var(--text);}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99;}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;min-height:100vh;}
+.page{display:none;padding:36px 32px;}
+.page.active{display:block;}
+.page-header{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:1px;line-height:1;}
+.page-sub{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:6px;}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:20px;}
+.card-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.mb16{margin-bottom:16px;} .mb20{margin-bottom:20px;} .mb24{margin-bottom:24px;}
+
+/* GRIDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* KPI */
+.kpi-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px 18px;position:relative;overflow:hidden;transition:transform .2s,border-color .2s;}
+.kpi-card:hover{transform:translateY(-2px);border-color:var(--border2);}
+.kpi-card::before{content:'';position:absolute;inset:0;border-radius:14px;}
+.kpi-card.c-tt::before{background:rgba(255,51,88,.06);}
+.kpi-card.c-ig::before{background:rgba(167,139,250,.06);}
+.kpi-card.c-cash::before{background:rgba(0,229,160,.06);}
+.kpi-card.c-dm::before{background:rgba(251,191,36,.06);}
+.kpi-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.kpi-dot{width:5px;height:5px;border-radius:50%;display:inline-block;}
+.c-tt .kpi-dot{background:var(--tt);box-shadow:0 0 6px var(--tt);}
+.c-ig .kpi-dot{background:var(--ig);box-shadow:0 0 6px var(--ig);}
+.c-cash .kpi-dot{background:var(--cash);box-shadow:0 0 6px var(--cash);}
+.c-dm .kpi-dot{background:var(--dm);box-shadow:0 0 6px var(--dm);}
+.kpi-val{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0;line-height:1;margin-bottom:3px;}
+.c-tt .kpi-val{color:var(--tt);} .c-ig .kpi-val{color:var(--ig);} .c-cash .kpi-val{color:var(--cash);} .c-dm .kpi-val{color:var(--dm);}
+.kpi-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+
+/* INPUTS */
+input,textarea,select{font-family:'DM Mono',monospace;font-size:13px;background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+input:focus,textarea:focus,select:focus{border-color:rgba(255,255,255,.2);}
+textarea{resize:vertical;min-height:70px;}
+label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
+.field{display:flex;flex-direction:column;margin-bottom:12px;}
+
+/* BUTTONS */
+.btn{font-family:'Manrope',sans-serif;font-size:12px;font-weight:700;padding:9px 20px;border-radius:8px;border:none;cursor:pointer;transition:all .15s;letter-spacing:.3px;}
+.btn-primary{background:var(--text);color:var(--bg);}
+.btn-primary:hover{opacity:.85;}
+.btn-primary:active{transform:scale(.98);}
+.btn-ghost{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border2);}
+.btn-ghost:hover{background:rgba(255,255,255,.1);}
+.btn-sm{padding:5px 12px;font-size:11px;}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:8px;}
+.confirm{font-family:'DM Mono',monospace;font-size:11px;color:var(--cash);opacity:0;transition:opacity .3s;}
+.confirm.show{opacity:1;}
+
+/* FILTERS */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.filter-btn{font-family:'Manrope',sans-serif;font-size:11px;font-weight:700;padding:6px 14px;border-radius:100px;border:1px solid var(--border2);background:var(--s1);color:var(--muted2);cursor:pointer;transition:all .2s;}
+.filter-btn:hover{color:var(--text);}
+.filter-btn.active{background:var(--text);color:var(--bg);border-color:var(--text);}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-family:'DM Mono',monospace;font-size:12px;}
+th{text-align:left;padding:7px 10px;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:400;border-bottom:1px solid var(--border2);}
+td{padding:10px 10px;border-bottom:1px solid var(--border);color:var(--text);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.td-tt{color:var(--tt);font-weight:500;} .td-ig{color:var(--ig);font-weight:500;} .td-cash{color:var(--cash);font-weight:500;} .td-dm{color:var(--dm);} .td-muted{color:var(--muted2);}
+.empty{text-align:center;padding:40px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;}
+
+/* BRIEF */
+.brief-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px;}
+.brief-stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
+.brief-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;margin-bottom:3px;}
+.brief-stat-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+
+/* TASK ITEMS */
+.task-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);transition:background .15s;}
+.task-item:last-child{border-bottom:none;}
+.task-item:hover{background:rgba(255,255,255,.02);}
+.task-check{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--border2);cursor:pointer;transition:all .15s;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;}
+.task-check.done{background:var(--cash);border-color:var(--cash);color:var(--bg);}
+.task-text{flex:1;font-size:13px;font-weight:500;}
+.task-text.done{text-decoration:line-through;color:var(--muted);}
+.task-priority{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:100px;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.p-high{background:rgba(255,51,88,.15);color:var(--tt);}
+.p-med{background:rgba(251,191,36,.12);color:var(--dm);}
+.p-low{background:rgba(255,255,255,.06);color:var(--muted2);}
+.task-del{cursor:pointer;color:var(--muted);font-size:14px;opacity:0;transition:opacity .15s;padding:2px 6px;}
+.task-item:hover .task-del{opacity:1;}
+
+/* CONTENT ITEMS */
+.content-item{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.content-item:last-child{border-bottom:none;}
+.content-plat{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 8px;border-radius:100px;white-space:nowrap;}
+.cp-tt{background:rgba(255,51,88,.15);color:var(--tt);}
+.cp-ig{background:rgba(167,139,250,.15);color:var(--ig);}
+.cp-both{background:rgba(255,255,255,.08);color:var(--muted2);}
+.content-txt{font-size:13px;font-weight:500;flex:1;min-width:150px;}
+
+/* OBJECTIFS */
+.obj-item{padding:14px;border-bottom:1px solid var(--border);}
+.obj-item:last-child{border-bottom:none;}
+.obj-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.obj-title-text{font-size:14px;font-weight:700;flex:1;}
+.obj-bar{height:4px;background:var(--s3);border-radius:100px;overflow:hidden;margin-bottom:8px;}
+.obj-fill{height:100%;border-radius:100px;transition:width .4s;}
+
+/* ABONNÉS */
+.abo-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.abo-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.abo-plat{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.abo-count{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;}
+.c-tt-t{color:var(--tt);} .c-ig-t{color:var(--ig);}
+.abo-right{display:flex;flex-direction:column;gap:6px;align-items:flex-end;}
+.abo-inp{width:100px;text-align:right;font-size:12px;padding:6px 10px;}
+
+/* CHART */
+.chart-wrap{position:relative;height:210px;}
+
+/* PLANNING */
+.planning-table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px;}
+.planning-table th{background:var(--s2);padding:9px 6px;text-align:center;font-size:10px;font-weight:700;color:var(--muted2);letter-spacing:.5px;border:1px solid var(--border);}
+.planning-table td{padding:6px 5px;text-align:center;border:1px solid var(--border);font-size:10px;vertical-align:middle;line-height:1.3;}
+.planning-table td:first-child{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);background:var(--s2);white-space:nowrap;}
+.pc{background:rgba(56,189,248,.08);color:#93c5fd;}
+.pb{background:rgba(0,229,160,.07);color:#6ee7b7;}
+.pp{background:rgba(251,191,36,.08);color:#fcd34d;}
+.pr{background:rgba(255,255,255,.03);color:var(--muted);}
+.pf{background:rgba(167,139,250,.08);color:#c4b5fd;}
+.pw{background:rgba(255,255,255,.06);color:var(--muted2);}
+
+/* PLANNING EDIT */
+.plan-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.plan-cell-edit{background:var(--s2);border:1px solid var(--border2);border-radius:8px;padding:10px;cursor:pointer;transition:all .2s;font-size:12px;text-align:center;}
+.plan-cell-edit:hover{border-color:rgba(255,255,255,.2);}
+
+/* IDEAS AI */
+.idea-ai-item{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:flex-start;}
+.idea-ai-item:last-child{border-bottom:none;}
+.idea-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);line-height:1;min-width:24px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--border2);border-radius:16px;padding:24px;width:90%;max-width:480px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-bottom:16px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.page.active>*{animation:fadeUp .3s ease forwards;}
+
+/* MOBILE */
+@media(max-width:768px){
+  .hamburger{display:block;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .main{margin-left:0;}
+  .page{padding:20px 16px;padding-top:56px;}
+  .grid-4{grid-template-columns:1fr 1fr;}
+  .grid-2{grid-template-columns:1fr;}
+  .abo-row{grid-template-columns:1fr;}
+  .page-title{font-size:32px;}
+  .plan-edit-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .grid-4{grid-template-columns:1fr 1fr;}
+  .kpi-val{font-size:32px;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<button class="hamburger" onclick="toggleMenu()">☰</button>
+<div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="logo">
+    <div class="logo-name">L'ARCHIPEL</div>
+    <div class="logo-sub">Dashboard Pro</div>
+  </div>
+  <div class="nav-item active" onclick="showPage('brief')"><span class="nav-icon">☀️</span><span>Brief Matin</span></div>
+  <div class="nav-item" onclick="showPage('tracker')"><span class="nav-icon">📊</span><span>Tracker</span></div>
+  <div class="nav-item" onclick="showPage('stats')"><span class="nav-icon">📈</span><span>Statistiques</span></div>
+  <div class="nav-item" onclick="showPage('tasks')"><span class="nav-icon">✅</span><span>Tâches</span></div>
+  <div class="nav-item" onclick="showPage('contenu')"><span class="nav-icon">💡</span><span>Contenu</span></div>
+  <div class="nav-item" onclick="showPage('objectifs')"><span class="nav-icon">🎯</span><span>Objectifs</span></div>
+  <div class="sidebar-bottom">
+    <a href="index.html" style="display:flex;align-items:center;gap:6px;padding:8px 0;font-size:11px;color:#5BA3FF;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:1px;">← OUTILS IA</a>
+    <div class="date-badge" id="sidebarDate"></div>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ===== BRIEF MATIN ===== -->
+<div class="page active" id="page-brief">
+  <div class="page-header">
+    <div><div class="page-title">☀️ Brief Matin</div><div class="page-sub" id="briefDate"></div></div>
+  </div>
+
+  <!-- Stats veille -->
+  <div class="card mb20">
+    <div class="card-title">📊 Stats de la veille</div>
+    <div class="brief-stat-grid">
+      <div class="brief-stat"><div class="brief-stat-val td-tt" id="yst-tt">—</div><div class="brief-stat-label">Vues TikTok</div></div>
+      <div class="brief-stat"><div class="brief-stat-val td-ig" id="yst-ig">—</div><div class="brief-stat-label">Vues Insta</div></div>
+      <div class="brief-stat"><div class="brief-stat-val" style="color:var(--cash)" id="yst-ca">—</div><div class="brief-stat-label">CA (€)</div></div>
+      <div class="brief-stat"><div class="brief-stat-val" style="color:var(--dm)" id="yst-dms">—</div><div class="brief-stat-label">DMs envoyés</div></div>
+      <div class="brief-stat"><div class="brief-stat-val" id="yst-ventes">—</div><div class="brief-stat-label">Ventes</div></div>
+      <div class="brief-stat"><div class="brief-stat-val" id="yst-posts">—</div><div class="brief-stat-label">Posts publiés</div></div>
+    </div>
+  </div>
+
+  <!-- Objectifs du jour -->
+  <div class="card mb20">
+    <div class="card-title">🎯 Objectifs du jour — à remplir le soir</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+      <div class="field"><label>💬 DMs à envoyer</label><input type="number" id="brief-dms-obj" placeholder="Ex: 40" min="0"></div>
+      <div class="field"><label>📱 Posts à publier</label><input type="number" id="brief-posts-obj" placeholder="Ex: 5" min="0"></div>
+      <div class="field"><label>💰 Objectif CA (€)</label><input type="number" id="brief-ca-obj" placeholder="Ex: 60" min="0"></div>
+      <div class="field"><label>📚 Formation (min)</label><input type="number" id="brief-form-obj" placeholder="Ex: 60" min="0"></div>
+    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);margin-bottom:14px;">
+      Le soir, note ce que tu as réellement fait 👇
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+      <div class="field"><label>💬 DMs réels</label><input type="number" id="brief-dms-real" placeholder="0" min="0"></div>
+      <div class="field"><label>📱 Posts réels</label><input type="number" id="brief-posts-real" placeholder="0" min="0"></div>
+      <div class="field"><label>💰 CA réel (€)</label><input type="number" id="brief-ca-real" placeholder="0" min="0"></div>
+      <div class="field"><label>📚 Formation réelle (min)</label><input type="number" id="brief-form-real" placeholder="0" min="0"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveBrief()">Enregistrer la journée</button>
+      <span class="confirm" id="briefConfirm">✓ Enregistré</span>
+    </div>
+  </div>
+
+  <!-- Tâches du jour depuis l'onglet Tâches -->
+  <div class="card mb20">
+    <div class="card-title">✅ Mes tâches du jour</div>
+    <div id="briefTasksList"><div class="empty">Aucune tâche active — ajoute des tâches dans l'onglet Tâches.</div></div>
+  </div>
+
+  <!-- Idées contenu IA -->
+  <div class="card mb20">
+    <div class="card-title">💡 5 idées de contenu du jour <span style="font-size:10px;color:var(--muted);font-weight:400;margin-left:6px;">générées par IA</span></div>
+    <div id="aiIdeasList"><div class="empty" style="padding:20px;">Clique pour générer les idées du jour 👇</div></div>
+    <div class="btn-row" style="margin-top:12px;">
+      <button class="btn btn-ghost" onclick="generateIdeas()" id="genBtn">✨ Générer 5 idées</button>
+      <span style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);" id="genStatus"></span>
+    </div>
+  </div>
+
+  <!-- Dernier brief -->
+  <div class="card">
+    <div class="card-title">📋 Bilan d'hier</div>
+    <div id="lastBriefDisplay" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted2);">Aucun bilan enregistré.</div>
+  </div>
+</div>
+
+<!-- ===== TRACKER ===== -->
+<div class="page" id="page-tracker">
+  <div class="page-header">
+    <div><div class="page-title">📊 Tracker</div><div class="page-sub">Saisie quotidienne</div></div>
+  </div>
+  <div class="card mb20">
+    <div class="card-title">✏️ Saisie du jour</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+      <div class="field"><label>📅 Date</label><input type="date" id="t-date"></div>
+      <div class="field"><label>🎵 Posts TikTok</label><input type="number" id="t-tt" placeholder="0" min="0"></div>
+      <div class="field"><label>📸 Posts Insta</label><input type="number" id="t-ig" placeholder="0" min="0"></div>
+      <div class="field"><label>💬 DMs envoyés</label><input type="number" id="t-dms" placeholder="0" min="0"></div>
+      <div class="field"><label>↩️ Réponses</label><input type="number" id="t-rep" placeholder="0" min="0"></div>
+      <div class="field"><label>🛒 Ventes</label><input type="number" id="t-ventes" placeholder="0" min="0"></div>
+      <div class="field"><label>💰 CA (€)</label><input type="number" id="t-ca" placeholder="0" min="0" step="0.01"></div>
+      <div class="field"><label>📝 Notes</label><input type="text" id="t-notes" placeholder="Optionnel..."></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveTracker()">Enregistrer</button>
+      <span class="confirm" id="trackerConfirm">✓ Enregistré</span>
+    </div>
+  </div>
+  <div class="grid-4 mb20">
+    <div class="kpi-card c-tt"><div class="kpi-label"><span class="kpi-dot"></span>Posts TT</div><div class="kpi-val" id="kpi-tt">0</div><div class="kpi-sub">semaine</div></div>
+    <div class="kpi-card c-ig"><div class="kpi-label"><span class="kpi-dot"></span>Posts IG</div><div class="kpi-val" id="kpi-ig">0</div><div class="kpi-sub">semaine</div></div>
+    <div class="kpi-card c-dm"><div class="kpi-label"><span class="kpi-dot"></span>DMs</div><div class="kpi-val" id="kpi-dms">0</div><div class="kpi-sub">semaine</div></div>
+    <div class="kpi-card c-cash"><div class="kpi-label"><span class="kpi-dot"></span>CA</div><div class="kpi-val" id="kpi-ca">0€</div><div class="kpi-sub">semaine</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">🗂 Historique</div>
+    <div class="tbl-wrap" id="trackerHist"><div class="empty">Aucune donnée.</div></div>
+  </div>
+</div>
+
+<!-- ===== STATS ===== -->
+<div class="page" id="page-stats">
+  <div class="page-header">
+    <div><div class="page-title">📈 Statistiques</div><div class="page-sub">Vues & revenus</div></div>
+  </div>
+  <div class="abo-row">
+    <div class="abo-card">
+      <div><div class="abo-plat">TikTok • Abonnés</div><div class="abo-count c-tt-t" id="abo-tt">—</div></div>
+      <div class="abo-right">
+        <input class="abo-inp" type="number" id="abo-tt-in" placeholder="ex: 1200">
+        <button class="btn btn-ghost btn-sm" onclick="updateAbo('tt')">Mettre à jour</button>
+      </div>
+    </div>
+    <div class="abo-card">
+      <div><div class="abo-plat">Instagram • Abonnés</div><div class="abo-count c-ig-t" id="abo-ig">—</div></div>
+      <div class="abo-right">
+        <input class="abo-inp" type="number" id="abo-ig-in" placeholder="ex: 850">
+        <button class="btn btn-ghost btn-sm" onclick="updateAbo('ig')">Mettre à jour</button>
+      </div>
+    </div>
+  </div>
+  <div class="card mb20">
+    <div class="card-title">📥 Saisir les vues</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
+      <div class="field"><label>📅 Date</label><input type="date" id="s-date"></div>
+      <div class="field"><label>🎵 Vues TikTok</label><input type="number" id="s-tt" placeholder="0" min="0"></div>
+      <div class="field"><label>📸 Vues Instagram</label><input type="number" id="s-ig" placeholder="0" min="0"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveStats()">Enregistrer</button>
+      <span class="confirm" id="statsConfirm">✓ Enregistré</span>
+    </div>
+  </div>
+  <div class="filters" id="statsFilters">
+    <button class="filter-btn active" onclick="setStatsFilter('3j',this)">3 jours</button>
+    <button class="filter-btn" onclick="setStatsFilter('7j',this)">7 jours</button>
+    <button class="filter-btn" onclick="setStatsFilter('30j',this)">30 jours</button>
+    <button class="filter-btn" onclick="setStatsFilter('tout',this)">Tout</button>
+  </div>
+  <div class="grid-4 mb20">
+    <div class="kpi-card c-tt"><div class="kpi-label"><span class="kpi-dot"></span>Vues TikTok</div><div class="kpi-val" id="s-tt-kpi">0</div><div class="kpi-sub">période</div></div>
+    <div class="kpi-card c-ig"><div class="kpi-label"><span class="kpi-dot"></span>Vues Instagram</div><div class="kpi-val" id="s-ig-kpi">0</div><div class="kpi-sub">période</div></div>
+    <div class="kpi-card c-cash"><div class="kpi-label"><span class="kpi-dot"></span>CA Total</div><div class="kpi-val" id="s-ca-kpi">0€</div><div class="kpi-sub">période</div></div>
+    <div class="kpi-card c-dm"><div class="kpi-label"><span class="kpi-dot"></span>Taux réponse</div><div class="kpi-val" id="s-taux-kpi">0%</div><div class="kpi-sub">DMs</div></div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Vues / jour</div>
+      <div style="display:flex;gap:6px;margin-bottom:12px;">
+        <button class="filter-btn active" id="ctog-both" onclick="toggleVues('both')" style="padding:4px 10px;font-size:10px;">Les deux</button>
+        <button class="filter-btn" id="ctog-tt" onclick="toggleVues('tt')" style="padding:4px 10px;font-size:10px;">TikTok</button>
+        <button class="filter-btn" id="ctog-ig" onclick="toggleVues('ig')" style="padding:4px 10px;font-size:10px;">Instagram</button>
+      </div>
+      <div class="chart-wrap"><canvas id="vuesChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">CA / jour (€)</div>
+      <div class="chart-wrap"><canvas id="caChart"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TÂCHES ===== -->
+<div class="page" id="page-tasks">
+  <div class="page-header">
+    <div><div class="page-title">✅ Tâches</div><div class="page-sub" id="tasksCount">0 tâche</div></div>
+  </div>
+  <div class="card mb20">
+    <div class="card-title">➕ Nouvelle tâche</div>
+    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;flex-wrap:wrap;">
+      <div class="field" style="margin:0;"><input type="text" id="task-in" placeholder="Ajouter une tâche..." onkeydown="if(event.key==='Enter')addTask()"></div>
+      <div><select id="task-prio" style="width:110px;">
+        <option value="high">🔴 Urgent</option>
+        <option value="med" selected>🟡 Normal</option>
+        <option value="low">⚪ Faible</option>
+      </select></div>
+      <div><select id="task-cat" style="width:120px;">
+        <option value="business">💼 Business</option>
+        <option value="formation">📚 Formation</option>
+        <option value="contenu">🎬 Contenu</option>
+        <option value="prospection">💬 Prospection</option>
+        <option value="autre">📌 Autre</option>
+      </select></div>
+      <button class="btn btn-primary" onclick="addTask()">Ajouter</button>
+    </div>
+  </div>
+  <div class="filters" id="taskFilters">
+    <button class="filter-btn active" onclick="filterTasks('all',this)">Toutes</button>
+    <button class="filter-btn" onclick="filterTasks('todo',this)">À faire</button>
+    <button class="filter-btn" onclick="filterTasks('done',this)">Terminées</button>
+    <button class="filter-btn" onclick="filterTasks('high',this)">🔴 Urgent</button>
+    <button class="filter-btn" onclick="filterTasks('formation',this)">📚 Formation</button>
+  </div>
+  <div class="card"><div id="tasksList"><div class="empty">Aucune tâche.</div></div></div>
+</div>
+
+<!-- ===== CONTENU ===== -->
+<div class="page" id="page-contenu">
+  <div class="page-header">
+    <div><div class="page-title">💡 Contenu</div><div class="page-sub">Banque d'idées TikTok & Instagram</div></div>
+  </div>
+  <div class="card mb20">
+    <div class="card-title">➕ Nouvelle idée</div>
+    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;">
+      <div class="field" style="margin:0;"><input type="text" id="cnt-in" placeholder="Ex: Comment j'ai gagné 100€ à 15 ans..." onkeydown="if(event.key==='Enter')addContent()"></div>
+      <div><select id="cnt-plat" style="width:120px;">
+        <option value="tt">🎵 TikTok</option>
+        <option value="ig">📸 Instagram</option>
+        <option value="both">📱 Les deux</option>
+      </select></div>
+      <div><select id="cnt-status" style="width:110px;">
+        <option value="idea">💭 Idée</option>
+        <option value="todo">⏳ À faire</option>
+        <option value="done">✅ Publié</option>
+      </select></div>
+      <button class="btn btn-primary" onclick="addContent()">Ajouter</button>
+    </div>
+  </div>
+  <div class="filters" id="contentFilters">
+    <button class="filter-btn active" onclick="filterContent('all',this)">Toutes</button>
+    <button class="filter-btn" onclick="filterContent('idea',this)">💭 Idées</button>
+    <button class="filter-btn" onclick="filterContent('todo',this)">⏳ À faire</button>
+    <button class="filter-btn" onclick="filterContent('done',this)">✅ Publiés</button>
+    <button class="filter-btn" onclick="filterContent('tt',this)">🎵 TikTok</button>
+    <button class="filter-btn" onclick="filterContent('ig',this)">📸 Instagram</button>
+  </div>
+  <div class="card"><div id="contentList"><div class="empty">Aucune idée.</div></div></div>
+</div>
+
+<!-- ===== OBJECTIFS ===== -->
+<div class="page" id="page-objectifs">
+  <div class="page-header">
+    <div><div class="page-title">🎯 Objectifs</div><div class="page-sub">Suivi de tes targets</div></div>
+  </div>
+  <div class="card mb20">
+    <div class="card-title">➕ Nouvel objectif</div>
+    <div style="display:grid;grid-template-columns:1fr 110px 110px auto;gap:10px;align-items:end;">
+      <div class="field" style="margin:0;"><input type="text" id="obj-title" placeholder="Ex: 1000€ de CA ce mois"></div>
+      <div class="field" style="margin:0;"><label>Actuel</label><input type="number" id="obj-cur" placeholder="0" min="0"></div>
+      <div class="field" style="margin:0;"><label>Objectif</label><input type="number" id="obj-tgt" placeholder="100" min="1"></div>
+      <button class="btn btn-primary" onclick="addObj()">Ajouter</button>
+    </div>
+  </div>
+  <div class="card"><div id="objList"><div class="empty">Aucun objectif.</div></div></div>
+</div>
+
+
+</main>
+</div>
+
+
+
+<script>
+// ===== STATE =====
+const defaultPlan = {
+  hours: ['08h00','09h00','10h00','11h00','12h00','13h00','14h00','15h00','16h00','17h30','18h00','19h30','20h30','21h30','22h00'],
+  days: ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'],
+  cells: {
+    '08h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pp',c:'Sport 💪'},{t:'pr',c:'Récup'}],
+    '09h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],
+    '10h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],
+    '11h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM'},{t:'pb',c:'Prosp. DM'}],
+    '12h00': [{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'🏁 Fin cours\n+ poster contenu'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'},{t:'pr',c:'Repas'}],
+    '13h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation + IA'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation\nL\'Archipel'},{t:'pf',c:'Formation\nL\'Archipel'}],
+    '14h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2\n(poster midi)'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Tournage\nmodules'},{t:'pf',c:'Tournage\nmodules'}],
+    '15h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Prosp. DM\n(jour impair)'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'SAV clients\nWhop'},{t:'pf',c:'SAV clients\nWhop'}],
+    '16h00': [{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pf',c:'Formation\nvidéos'},{t:'pc',c:'Cours'},{t:'pc',c:'Cours'},{t:'pb',c:'Contenu x2'},{t:'pb',c:'Contenu x2'}],
+    '17h30': [{t:'pr',c:'🏠 Retour'},{t:'pr',c:'🏠 Retour'},{t:'pw',c:'—'},{t:'pr',c:'🏠 Retour'},{t:'pr',c:'🏠 Retour'},{t:'pw',c:'—'},{t:'pw',c:'—'}],
+    '18h00': [{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pp',c:'Devoirs\n/ Sport'},{t:'pb',c:'Prosp. DM\n+ poster'},{t:'pb',c:'Prosp. DM\n+ poster'}],
+    '19h30': [{t:'pf',c:'Formation\nL\'Archipel'},{t:'pf',c:'Formation\nIA + modules'},{t:'pf',c:'Formation\nL\'Archipel'},{t:'pf',c:'Formation\nL\'Archipel'},{t:'pf',c:'Formation\nL\'Archipel'},{t:'pb',c:'Contenu x1\n+ poster'},{t:'pb',c:'Contenu x1\n+ poster'}],
+    '20h30': [{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'Prosp. DM\n(j. impair)'},{t:'pb',c:'SAV\nWhop'},{t:'pw',c:'—'},{t:'pb',c:'Bilan\nsemaine'}],
+    '21h30': [{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'SAV Whop'},{t:'pb',c:'Planif W-E'},{t:'pw',c:'—'},{t:'pw',c:'—'}],
+    '22h00': [{t:'pr',c:'😴'},{t:'pr',c:'😴'},{t:'pr',c:'😴'},{t:'pr',c:'😴'},{t:'pr',c:'😴'},{t:'pr',c:'😴'},{t:'pr',c:'😴'}],
+  }
+};
+
+let DB = JSON.parse(localStorage.getItem('archipel-dashboard-v1') || JSON.stringify({
+  tracker:[], stats:[], briefs:[], tasks:[], content:[], objectifs:[],
+  abonnes:{tt:null,ig:null}, planning: JSON.parse(JSON.stringify(defaultPlan))
+}));
+if(!DB.planning) DB.planning = JSON.parse(JSON.stringify(defaultPlan));
+
+let statsFilter='3j', vuesMode='both', taskFilter='all', contentFilter='all';
+let vuesChartI, caChartI;
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded',()=>{
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('t-date').value = today;
+  document.getElementById('s-date').value = today;
+  const now = new Date();
+  const opts={weekday:'long',day:'numeric',month:'long'};
+  document.getElementById('briefDate').textContent = now.toLocaleDateString('fr-FR',opts);
+  document.getElementById('sidebarDate').innerHTML=`Semaine ${getWeek(now)}<br>${now.toLocaleDateString('fr-FR',{day:'numeric',month:'short'})}`;
+  renderAll();
+  initCharts();
+});
+
+function save(){ localStorage.setItem('archipel-dashboard-v1',JSON.stringify(DB)); }
+
+// ===== NAV =====
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
+  if(id==='stats') setTimeout(()=>updateCharts(getStatsFiltered()),100);
+  if(id==='brief'){renderBriefTasks();renderYday();}
+  closeSidebar();
+}
+
+function toggleMenu(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ===== BRIEF =====
+function saveBrief(){
+  const b={
+    date:new Date().toISOString().split('T')[0],
+    dmsObj:+document.getElementById('brief-dms-obj').value||0,
+    postsObj:+document.getElementById('brief-posts-obj').value||0,
+    caObj:+document.getElementById('brief-ca-obj').value||0,
+    formObj:+document.getElementById('brief-form-obj').value||0,
+    dmsReal:+document.getElementById('brief-dms-real').value||0,
+    postsReal:+document.getElementById('brief-posts-real').value||0,
+    caReal:+document.getElementById('brief-ca-real').value||0,
+    formReal:+document.getElementById('brief-form-real').value||0,
+    ts:Date.now()
+  };
+  DB.briefs.unshift(b); save();
+  showConfirm('briefConfirm');
+  renderLastBrief();
+  ['brief-dms-obj','brief-posts-obj','brief-ca-obj','brief-form-obj','brief-dms-real','brief-posts-real','brief-ca-real','brief-form-real']
+    .forEach(id=>document.getElementById(id).value='');
+}
+
+function renderLastBrief(){
+  const el=document.getElementById('lastBriefDisplay');
+  if(!DB.briefs.length){el.innerHTML='Aucun bilan.';return;}
+  const b=DB.briefs[0];
+  const row=(label,obj,real,unit='')=>{
+    if(!obj&&!real) return '';
+    const ok=real>=obj;
+    const icon=ok?'✅':'❌';
+    return `<div style="display:flex;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);">
+      <span style="flex:1;">${label}</span>
+      <span style="color:var(--muted2);">Obj: <strong>${obj}${unit}</strong></span>
+      <span>→ Réel: <strong style="color:${ok?'var(--cash)':'var(--tt)'};">${real}${unit}</strong></span>
+      <span>${icon}</span>
+    </div>`;
+  };
+  el.innerHTML=`<div style="color:var(--muted2);font-size:10px;margin-bottom:10px;">${formatDate(b.date)}</div>
+    ${row('💬 DMs',b.dmsObj,b.dmsReal)}
+    ${row('📱 Posts',b.postsObj,b.postsReal)}
+    ${row('💰 CA',b.caObj,b.caReal,'€')}
+    ${row('📚 Formation',b.formObj,b.formReal,' min')}`;
+}
+
+function renderYday(){
+  const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yDate=yesterday.toISOString().split('T')[0];
+  const te=DB.tracker.find(e=>e.date===yDate);
+  const se=DB.stats.find(e=>e.date===yDate);
+  document.getElementById('yst-tt').textContent=se?fmtN(se.tt):'—';
+  document.getElementById('yst-ig').textContent=se?fmtN(se.ig):'—';
+  document.getElementById('yst-ca').textContent=te?te.ca.toFixed(0)+'€':'—';
+  document.getElementById('yst-dms').textContent=te?te.dms:'—';
+  document.getElementById('yst-ventes').textContent=te?te.ventes:'—';
+  document.getElementById('yst-posts').textContent=te?(te.ttP+te.igP):'—';
+}
+
+function renderBriefTasks(){
+  const el=document.getElementById('briefTasksList');
+  const today=new Date().toISOString().split('T')[0];
+  // Show undone tasks, hide tasks done yesterday or before
+  const tasks=DB.tasks.filter(t=>{
+    if(t.done && t.doneDate && t.doneDate < today) return false;
+    return true;
+  });
+  if(!tasks.length){el.innerHTML='<div class="empty">Aucune tâche active.</div>';return;}
+  const sorted=[...tasks].sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    const o={high:0,med:1,low:2}; return o[a.priority]-o[b.priority];
+  });
+  el.innerHTML=sorted.map(t=>`
+    <div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTaskBrief(${t.id})">${t.done?'✓':''}</div>
+      <div class="task-text ${t.done?'done':''}">${t.text}</div>
+      <span class="task-priority p-${t.priority}">${t.priority==='high'?'Urgent':t.priority==='med'?'Normal':'Faible'}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);padding:2px 7px;background:rgba(255,255,255,.04);border-radius:100px;">${t.cat}</span>
+    </div>`).join('');
+}
+
+function toggleTaskBrief(id){
+  const t=DB.tasks.find(t=>t.id===id);
+  if(t){
+    t.done=!t.done;
+    t.doneDate=t.done?new Date().toISOString().split('T')[0]:null;
+    save(); renderBriefTasks(); renderTasks();
+  }
+}
+
+// ===== IDEAS AI =====
+async function generateIdeas(){
+  const btn=document.getElementById('genBtn');
+  const status=document.getElementById('genStatus');
+  btn.disabled=true; btn.textContent='⏳ Génération...'; status.textContent='';
+  document.getElementById('aiIdeasList').innerHTML='<div class="empty">Génération en cours...</div>';
+  try{
+    const _k=localStorage.getItem('archipel_api_key')||'';
+    const resp=await fetch('https://dashboard-thibault.vercel.app/api/claude',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        _apiKey:_k,
+        messages:[{role:'user',content:`Tu es un expert en création de contenu pour les réseaux sociaux (TikTok et Instagram). 
+Génère exactement 5 idées de vidéos/posts percutants pour un entrepreneur de 15 ans qui vend une formation business en ligne appelée L'Archipel (marketing digital, revenus en ligne, IA) ciblant les 13-25 ans.
+Les idées doivent être virales, accrocheuses, adaptées à TikTok/Reels.
+Réponds UNIQUEMENT en JSON valide, sans aucun texte autour, format:
+{"ideas":[{"platform":"TikTok","hook":"...","description":"..."},...]}`}]
+      })
+    });
+    const data=await resp.json();
+    const text=data.content.filter(c=>c.type==='text').map(c=>c.text).join('');
+    const clean=text.replace(/```json|```/g,'').trim();
+    const parsed=JSON.parse(clean);
+    const el=document.getElementById('aiIdeasList');
+    const platC={TikTok:'cp-tt',Instagram:'cp-ig','Les deux':'cp-both'};
+    el.innerHTML=parsed.ideas.map((idea,i)=>`
+      <div class="idea-ai-item">
+        <div class="idea-num">${i+1}</div>
+        <div style="flex:1;">
+          <div style="margin-bottom:4px;display:flex;gap:6px;align-items:center;">
+            <span class="content-plat ${platC[idea.platform]||'cp-both'}">${idea.platform}</span>
+            <strong style="font-size:13px;">${idea.hook}</strong>
+          </div>
+          <div style="font-size:12px;color:var(--muted2);">${idea.description}</div>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="addIdeaToBank('${idea.platform}','${idea.hook.replace(/'/g,"\\'")} — ${idea.description.replace(/'/g,"\\'")}')">+ Banque</button>
+      </div>`).join('');
+    status.textContent='✓ Généré';
+  }catch(e){
+    document.getElementById('aiIdeasList').innerHTML='<div class="empty">Erreur — réessaie.</div>';
+    status.textContent='Erreur';
+  }
+  btn.disabled=false; btn.textContent='✨ Régénérer';
+}
+
+function addIdeaToBank(platform,text){
+  const platMap={'TikTok':'tt','Instagram':'ig','Les deux':'both'};
+  DB.content.push({id:Date.now(),text,platform:platMap[platform]||'both',status:'idea',ts:Date.now()});
+  save(); alert('✅ Ajouté à ta banque de contenu !');
+}
+
+// ===== TRACKER =====
+function saveTracker(){
+  const date=document.getElementById('t-date').value; if(!date)return;
+  const entry={date,ttP:+document.getElementById('t-tt').value||0,igP:+document.getElementById('t-ig').value||0,dms:+document.getElementById('t-dms').value||0,rep:+document.getElementById('t-rep').value||0,ventes:+document.getElementById('t-ventes').value||0,ca:parseFloat(document.getElementById('t-ca').value)||0,notes:document.getElementById('t-notes').value};
+  const idx=DB.tracker.findIndex(e=>e.date===date);
+  if(idx>=0) DB.tracker[idx]=entry; else DB.tracker.push(entry);
+  save(); renderTrackerKPIs(); renderTrackerHist();
+  ['t-tt','t-ig','t-dms','t-rep','t-ventes','t-ca','t-notes'].forEach(id=>document.getElementById(id).value='');
+  showConfirm('trackerConfirm'); renderYday();
+}
+
+function getWeekEntries(){
+  const now=new Date(),mon=new Date(now);
+  mon.setDate(now.getDate()-((now.getDay()+6)%7)); mon.setHours(0,0,0,0);
+  return DB.tracker.filter(e=>new Date(e.date+'T12:00:00')>=mon);
+}
+
+function renderTrackerKPIs(){
+  const we=getWeekEntries();
+  document.getElementById('kpi-tt').textContent=we.reduce((s,e)=>s+e.ttP,0);
+  document.getElementById('kpi-ig').textContent=we.reduce((s,e)=>s+e.igP,0);
+  document.getElementById('kpi-dms').textContent=we.reduce((s,e)=>s+e.dms,0);
+  document.getElementById('kpi-ca').textContent=we.reduce((s,e)=>s+e.ca,0).toFixed(0)+'€';
+}
+
+function renderTrackerHist(){
+  const sorted=[...DB.tracker].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const el=document.getElementById('trackerHist');
+  if(!sorted.length){el.innerHTML='<div class="empty">Aucune donnée.</div>';return;}
+  el.innerHTML=`<table><thead><tr><th>Date</th><th>TT</th><th>IG</th><th>DMs</th><th>Rép.</th><th>Ventes</th><th>CA</th><th>Taux</th></tr></thead><tbody>`+
+  sorted.map(e=>`<tr><td class="td-muted">${formatDate(e.date)}</td><td class="td-tt">${e.ttP}</td><td class="td-ig">${e.igP}</td><td class="td-dm">${e.dms}</td><td>${e.rep}</td><td>${e.ventes}</td><td class="td-cash">${e.ca.toFixed(2)}€</td><td>${e.dms>0?((e.rep/e.dms)*100).toFixed(0)+'%':'—'}</td></tr>`).join('')+
+  '</tbody></table>';
+}
+
+// ===== STATS =====
+function saveStats(){
+  const date=document.getElementById('s-date').value; if(!date)return;
+  const entry={date,tt:+document.getElementById('s-tt').value||0,ig:+document.getElementById('s-ig').value||0};
+  const idx=DB.stats.findIndex(e=>e.date===date);
+  if(idx>=0) DB.stats[idx]=entry; else DB.stats.push(entry);
+  save(); renderStatsKPIs(); updateCharts(getStatsFiltered());
+  ['s-tt','s-ig'].forEach(id=>document.getElementById(id).value='');
+  showConfirm('statsConfirm'); renderYday();
+}
+
+function updateAbo(p){
+  const val=parseInt(document.getElementById('abo-'+p+'-in').value); if(!val)return;
+  DB.abonnes[p]=val; document.getElementById('abo-'+p+'-in').value='';
+  save(); renderAbonnes();
+}
+
+function renderAbonnes(){
+  document.getElementById('abo-tt').textContent=DB.abonnes.tt?fmtN(DB.abonnes.tt):'—';
+  document.getElementById('abo-ig').textContent=DB.abonnes.ig?fmtN(DB.abonnes.ig):'—';
+}
+
+function setStatsFilter(f,btn){
+  statsFilter=f;
+  document.querySelectorAll('#statsFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderStatsKPIs(); updateCharts(getStatsFiltered());
+}
+
+function getStatsFiltered(){
+  const days=statsFilter==='3j'?3:statsFilter==='7j'?7:statsFilter==='30j'?30:9999;
+  const now=new Date();
+  return DB.stats.filter(e=>(now-new Date(e.date+'T12:00:00'))/86400000<=days)
+    .sort((a,b)=>new Date(a.date)-new Date(b.date));
+}
+
+function renderStatsKPIs(){
+  const e=getStatsFiltered();
+  const days=statsFilter==='3j'?3:statsFilter==='7j'?7:statsFilter==='30j'?30:9999;
+  const now=new Date();
+  const tf=DB.tracker.filter(t=>(now-new Date(t.date+'T12:00:00'))/86400000<=days);
+  document.getElementById('s-tt-kpi').textContent=fmtN(e.reduce((s,i)=>s+i.tt,0));
+  document.getElementById('s-ig-kpi').textContent=fmtN(e.reduce((s,i)=>s+i.ig,0));
+  document.getElementById('s-ca-kpi').textContent=tf.reduce((s,i)=>s+i.ca,0).toFixed(0)+'€';
+  const dms=tf.reduce((s,i)=>s+i.dms,0),rep=tf.reduce((s,i)=>s+i.rep,0);
+  document.getElementById('s-taux-kpi').textContent=dms>0?((rep/dms)*100).toFixed(0)+'%':'—';
+}
+
+// ===== CHARTS =====
+function initCharts(){
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#16162a',titleColor:'#f1f1f6',bodyColor:'#5a5a72',borderColor:'#ffffff0a',borderWidth:1}},scales:{x:{grid:{color:'#ffffff05'},ticks:{color:'#5a5a72',font:{family:'DM Mono',size:10}}},y:{grid:{color:'#ffffff05'},ticks:{color:'#5a5a72',font:{family:'DM Mono',size:10}}}}};
+  vuesChartI=new Chart(document.getElementById('vuesChart').getContext('2d'),{type:'line',data:{labels:[],datasets:[]},options:{...base}});
+  caChartI=new Chart(document.getElementById('caChart').getContext('2d'),{type:'bar',data:{labels:[],datasets:[]},options:{...base,scales:{...base.scales,y:{...base.scales.y,ticks:{...base.scales.y.ticks,callback:v=>v+'€'}}}}});
+}
+
+function toggleVues(mode){
+  vuesMode=mode;
+  ['both','tt','ig'].forEach(m=>document.getElementById('ctog-'+m).classList.toggle('active',m===mode));
+  updateCharts(getStatsFiltered());
+}
+
+function updateCharts(entries){
+  if(!vuesChartI||!caChartI)return;
+  const labels=entries.map(e=>fmtDateS(e.date));
+  const ds=[];
+  if(vuesMode==='tt'||vuesMode==='both') ds.push({label:'TikTok',data:entries.map(e=>e.tt||0),borderColor:'#ff3358',backgroundColor:'rgba(255,51,88,.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#ff3358',tension:.4,fill:true});
+  if(vuesMode==='ig'||vuesMode==='both') ds.push({label:'Instagram',data:entries.map(e=>e.ig||0),borderColor:'#a78bfa',backgroundColor:'rgba(167,139,250,.08)',borderWidth:2,pointRadius:4,pointBackgroundColor:'#a78bfa',tension:.4,fill:true});
+  vuesChartI.data={labels,datasets:ds}; vuesChartI.update();
+  const days=statsFilter==='3j'?3:statsFilter==='7j'?7:statsFilter==='30j'?30:9999;
+  const now=new Date();
+  const tf=[...DB.tracker].filter(e=>(now-new Date(e.date+'T12:00:00'))/86400000<=days).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  caChartI.data={labels:tf.map(e=>fmtDateS(e.date)),datasets:[{label:'CA',data:tf.map(e=>e.ca||0),backgroundColor:'rgba(0,229,160,.2)',borderColor:'#00e5a0',borderWidth:1.5,borderRadius:6}]};
+  caChartI.update();
+}
+
+// ===== TASKS =====
+function addTask(){
+  const text=document.getElementById('task-in').value.trim(); if(!text)return;
+  DB.tasks.push({id:Date.now(),text,priority:document.getElementById('task-prio').value,cat:document.getElementById('task-cat').value,done:false,doneDate:null,ts:Date.now()});
+  document.getElementById('task-in').value='';
+  save(); renderTasks(); renderBriefTasks();
+}
+
+function toggleTask(id){
+  const t=DB.tasks.find(t=>t.id===id);
+  if(t){t.done=!t.done;t.doneDate=t.done?new Date().toISOString().split('T')[0]:null;save();renderTasks();renderBriefTasks();}
+}
+
+function deleteTask(id){DB.tasks=DB.tasks.filter(t=>t.id!==id);save();renderTasks();renderBriefTasks();}
+
+function filterTasks(f,btn){
+  taskFilter=f;
+  document.querySelectorAll('#taskFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderTasks();
+}
+
+function renderTasks(){
+  const today=new Date().toISOString().split('T')[0];
+  let tasks=[...DB.tasks].sort((a,b)=>{
+    if(a.done!==b.done)return a.done?1:-1;
+    const o={high:0,med:1,low:2};return o[a.priority]-o[b.priority];
+  });
+  if(taskFilter==='todo') tasks=tasks.filter(t=>!t.done);
+  else if(taskFilter==='done') tasks=tasks.filter(t=>t.done);
+  else if(taskFilter==='high') tasks=tasks.filter(t=>t.priority==='high');
+  else if(taskFilter==='formation') tasks=tasks.filter(t=>t.cat==='formation');
+  const undone=DB.tasks.filter(t=>!t.done).length;
+  document.getElementById('tasksCount').textContent=`${undone} restante(s)`;
+  const el=document.getElementById('tasksList');
+  if(!tasks.length){el.innerHTML='<div class="empty">Aucune tâche.</div>';return;}
+  el.innerHTML=tasks.map(t=>`
+    <div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="toggleTask(${t.id})">${t.done?'✓':''}</div>
+      <div class="task-text ${t.done?'done':''}">${t.text}</div>
+      <span class="task-priority p-${t.priority}">${t.priority==='high'?'Urgent':t.priority==='med'?'Normal':'Faible'}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);padding:2px 7px;background:rgba(255,255,255,.04);border-radius:100px;">${t.cat}</span>
+      <span class="task-del" onclick="deleteTask(${t.id})">✕</span>
+    </div>`).join('');
+}
+
+// ===== CONTENT =====
+function addContent(){
+  const text=document.getElementById('cnt-in').value.trim(); if(!text)return;
+  DB.content.push({id:Date.now(),text,platform:document.getElementById('cnt-plat').value,status:document.getElementById('cnt-status').value,ts:Date.now()});
+  document.getElementById('cnt-in').value=''; save(); renderContent();
+}
+
+function updateCntStatus(id,status){
+  const c=DB.content.find(c=>c.id===id);
+  if(c){c.status=status;save();renderContent();}
+}
+
+function deleteCnt(id){DB.content=DB.content.filter(c=>c.id!==id);save();renderContent();}
+
+function filterContent(f,btn){
+  contentFilter=f;
+  document.querySelectorAll('#contentFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active'); renderContent();
+}
+
+function renderContent(){
+  let items=[...DB.content].sort((a,b)=>b.ts-a.ts);
+  if(contentFilter==='idea') items=items.filter(c=>c.status==='idea');
+  else if(contentFilter==='todo') items=items.filter(c=>c.status==='todo');
+  else if(contentFilter==='done') items=items.filter(c=>c.status==='done');
+  else if(contentFilter==='tt') items=items.filter(c=>c.platform==='tt');
+  else if(contentFilter==='ig') items=items.filter(c=>c.platform==='ig');
+  const el=document.getElementById('contentList');
+  if(!items.length){el.innerHTML='<div class="empty">Aucune idée.</div>';return;}
+  const pL={tt:'🎵 TikTok',ig:'📸 Insta',both:'📱 Les deux'};
+  const pC={tt:'cp-tt',ig:'cp-ig',both:'cp-both'};
+  el.innerHTML=items.map(c=>`
+    <div class="content-item">
+      <span class="content-plat ${pC[c.platform]}">${pL[c.platform]}</span>
+      <span class="content-txt">${c.text}</span>
+      <select onchange="updateCntStatus(${c.id},this.value)" style="width:115px;font-size:11px;padding:5px 8px;">
+        <option value="idea" ${c.status==='idea'?'selected':''}>💭 Idée</option>
+        <option value="todo" ${c.status==='todo'?'selected':''}>⏳ À faire</option>
+        <option value="done" ${c.status==='done'?'selected':''}>✅ Publié</option>
+      </select>
+      <span class="task-del" onclick="deleteCnt(${c.id})">✕</span>
+    </div>`).join('');
+}
+
+// ===== OBJECTIFS =====
+function addObj(){
+  const title=document.getElementById('obj-title').value.trim(); if(!title)return;
+  DB.objectifs.push({id:Date.now(),title,current:+document.getElementById('obj-cur').value||0,target:+document.getElementById('obj-tgt').value||100,ts:Date.now()});
+  ['obj-title','obj-cur','obj-tgt'].forEach(id=>document.getElementById(id).value='');
+  save(); renderObjectifs();
+}
+
+function updateObj(id,val){const o=DB.objectifs.find(o=>o.id===id);if(o){o.current=+val;save();renderObjectifs();}}
+function deleteObj(id){DB.objectifs=DB.objectifs.filter(o=>o.id!==id);save();renderObjectifs();}
+
+function renderObjectifs(){
+  const el=document.getElementById('objList');
+  if(!DB.objectifs.length){el.innerHTML='<div class="empty">Aucun objectif.</div>';return;}
+  el.innerHTML=DB.objectifs.map(o=>{
+    const pct=Math.min(100,Math.round((o.current/o.target)*100));
+    const col=pct>=100?'var(--cash)':pct>=50?'var(--dm)':'var(--ig)';
+    return `<div class="obj-item">
+      <div class="obj-header"><div class="obj-title-text">${o.title}</div>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:${col};">${pct}%</span>
+        <span class="task-del" onclick="deleteObj(${o.id})">✕</span></div>
+      <div class="obj-bar"><div class="obj-fill" style="width:${pct}%;background:${col};"></div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted2);">${o.current} / ${o.target}</span>
+        <input type="number" value="${o.current}" onchange="updateObj(${o.id},this.value)" style="width:90px;padding:5px 8px;font-size:12px;">
+      </div></div>`;
+  }).join('');
+}
+
+// ===== PLANNING =====
+function renderPlanning(){
+  const p=DB.planning;
+  let html=`<table class="planning-table"><thead><tr><th>Heure</th>`;
+  p.days.forEach(d=>{html+=`<th>${d}</th>`;});
+  html+=`</tr></thead><tbody>`;
+  p.hours.forEach(h=>{
+    html+=`<tr><td>${h}</td>`;
+    const row=p.cells[h]||[];
+    p.days.forEach((_,i)=>{
+      const cell=row[i]||{t:'pw',c:'—'};
+      html+=`<td class="${cell.t}" style="white-space:pre-line;">${cell.c}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table>`;
+  document.getElementById('planningView').innerHTML=html;
+}
+
+function openPlanEdit(){document.getElementById('planModal').classList.add('open');}
+function closePlanModal(){document.getElementById('planModal').classList.remove('open');}
+
+function savePlanEdit(){
+  const day=+document.getElementById('edit-day').value;
+  const hour=document.getElementById('edit-hour').value;
+  const content=document.getElementById('edit-content').value;
+  const type=document.getElementById('edit-type').value;
+  if(!DB.planning.cells[hour]) DB.planning.cells[hour]=Array(7).fill({t:'pw',c:'—'}).map(x=>({...x}));
+  DB.planning.cells[hour][day]={t:type,c:content};
+  save(); renderPlanning(); closePlanModal();
+}
+
+// ===== UTILS =====
+function renderAll(){
+  renderAbonnes(); renderTrackerKPIs(); renderTrackerHist();
+  renderStatsKPIs(); renderTasks(); renderContent();
+  renderObjectifs(); renderPlanning(); renderBriefTasks();
+  renderYday(); renderLastBrief();
+}
+
+function showConfirm(id){
+  const el=document.getElementById(id);
+  el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2000);
+}
+
+function fmtN(n){if(!n)return'0';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'k';return n.toString();}
+function formatDate(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});}
+function fmtDateS(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
+function getWeek(d){const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));date.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));const y=new Date(Date.UTC(date.getUTCFullYear(),0,1));return Math.ceil((((date-y)/86400000)+1)/7);}
+</script>
+</body>
+</html>
