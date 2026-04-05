@@ -151,10 +151,14 @@ var _apiKey = localStorage.getItem('archipel_api_key') || '';
 
 function apiCall(body){
   var b = Object.assign({}, body);
-  b._apiKey = _apiKey;
-  return fetch('https://dashboard-thibault.vercel.app/api/claude', {
+  return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': _apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify(b)
   });
 }
