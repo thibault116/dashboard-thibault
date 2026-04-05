@@ -133,8 +133,7 @@ textarea::placeholder{color:var(--muted)}
 </div>
 
 <script>
-// ⚠️ REMPLACE PAR TON URL VERCEL
-const API = 'https://dashboard-thibault.vercel.app/api/claude';
+// API directe Anthropic
 
 const PERSONAS = {
   hesitant:{name:'Lucas',init:'L',sys:`Tu joues Lucas, 17 ans, prospect DM Instagram. Il a vu la formation L'Archipel de Thibault (15 ans): marketing digital, Starter 27€, Premium 97€, VIP 197€. Intéressé mais peur de perdre son argent. Pose des questions sur les résultats. Réponds en DM court (2-3 phrases), naturel, style ado français. Ne mentionne jamais que tu es une IA.`},
@@ -246,10 +245,14 @@ var _apiKey = localStorage.getItem('archipel_api_key') || '';
 
 function apiCall(body){
   var b = Object.assign({}, body);
-  b._apiKey = _apiKey;
-  return fetch('https://dashboard-thibault.vercel.app/api/claude', {
+  return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': _apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
     body: JSON.stringify(b)
   });
 }
