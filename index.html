@@ -100,6 +100,27 @@ tr:hover td{background:rgba(255,255,255,.02);}
 .td-tt{color:var(--tt);font-weight:500;} .td-ig{color:var(--ig);font-weight:500;} .td-cash{color:var(--cash);font-weight:500;} .td-dm{color:var(--dm);} .td-muted{color:var(--muted2);}
 .empty{text-align:center;padding:40px;color:var(--muted);font-family:'DM Mono',monospace;font-size:12px;}
 
+/* TOP 3 TACHES */
+.top3-item{display:flex;align-items:center;gap:10px;background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;margin-bottom:7px;transition:all .2s;}
+.top3-item.done-item{opacity:.55;}
+.top3-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--muted);line-height:1;min-width:20px;}
+.top3-check{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;}
+.top3-check.done{background:var(--cash);border-color:var(--cash);color:var(--bg);}
+.top3-text{flex:1;font-size:13px;font-weight:600;}
+.top3-text.done{text-decoration:line-through;color:var(--muted);}
+.top3-actions{display:flex;gap:5px;}
+.top3-btn{background:rgba(255,255,255,.05);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;font-size:12px;cursor:pointer;color:var(--muted2);transition:all .15s;font-family:'Manrope',sans-serif;}
+.top3-btn:hover{background:rgba(255,255,255,.1);color:var(--text);}
+.top3-empty{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;padding:14px;}
+.top3-picker{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-top:8px;display:none;}
+.top3-picker.open{display:block;}
+.top3-picker-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;}
+.top3-picker-list{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.top3-pick-item{padding:9px 12px;background:var(--s3);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:background .15s;display:flex;align-items:center;gap:8px;}
+.top3-pick-item:hover{background:rgba(255,255,255,.08);}
+.top3-pick-item.selected{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.2);}
+.top3-pick-item .pbadge{font-family:'DM Mono',monospace;font-size:10px;}
+
 /* BRIEF */
 .brief-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px;}
 .brief-stat{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center;}
@@ -194,6 +215,13 @@ tr:hover td{background:rgba(255,255,255,.02);}
   .abo-row{grid-template-columns:1fr;}
   .page-title{font-size:32px;}
   .plan-edit-grid{grid-template-columns:1fr;}
+  /* Fix date input overflow on mobile */
+  .tracker-form, .stats-form { grid-template-columns: 1fr 1fr !important; }
+  /* Fix text inputs too small on mobile */
+  .mobile-input { font-size:16px !important; padding:12px 14px !important; }
+  /* Stack task/content/obj forms on mobile */
+  .add-form-row { grid-template-columns: 1fr !important; }
+  .add-form-selects { flex-wrap: wrap; }
 }
 @media(max-width:480px){
   .grid-4{grid-template-columns:1fr 1fr;}
@@ -231,6 +259,23 @@ tr:hover td{background:rgba(255,255,255,.02);}
 <div class="page active" id="page-brief">
   <div class="page-header">
     <div><div class="page-title">☀️ Brief Matin</div><div class="page-sub" id="briefDate"></div></div>
+  </div>
+
+  <!-- TOP 3 DU JOUR -->
+  <div class="card mb20">
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span>🎯 Top 3 — Priorités du jour</span>
+      <button class="btn btn-ghost btn-sm" onclick="toggleTop3Picker()">+ Ajouter</button>
+    </div>
+    <div id="top3List"></div>
+    <div class="top3-picker" id="top3Picker">
+      <div class="top3-picker-title">Choisir dans mes tâches</div>
+      <div class="top3-picker-list" id="top3PickerList"></div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input class="mobile-input" type="text" id="top3NewInput" placeholder="Ou tape une nouvelle tâche..." style="flex:1;" onkeydown="if(event.key==='Enter')addTop3FromInput()">
+        <button class="btn btn-primary btn-sm" onclick="addTop3FromInput()">OK</button>
+      </div>
+    </div>
   </div>
 
   <!-- Stats veille -->
@@ -300,8 +345,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">✏️ Saisie du jour</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
-      <div class="field"><label>📅 Date</label><input type="date" id="t-date"></div>
+    <div class="tracker-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+      <div class="field"><label>📅 Date</label><input type="date" id="t-date" style="width:100%"></div>
       <div class="field"><label>🎵 Posts TikTok</label><input type="number" id="t-tt" placeholder="0" min="0"></div>
       <div class="field"><label>📸 Posts Insta</label><input type="number" id="t-ig" placeholder="0" min="0"></div>
       <div class="field"><label>💬 DMs envoyés</label><input type="number" id="t-dms" placeholder="0" min="0"></div>
@@ -350,8 +395,8 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">📥 Saisir les vues</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;">
-      <div class="field"><label>📅 Date</label><input type="date" id="s-date"></div>
+    <div class="stats-form" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;">
+      <div class="field"><label>📅 Date</label><input type="date" id="s-date" style="width:100%"></div>
       <div class="field"><label>🎵 Vues TikTok</label><input type="number" id="s-tt" placeholder="0" min="0"></div>
       <div class="field"><label>📸 Vues Instagram</label><input type="number" id="s-ig" placeholder="0" min="0"></div>
     </div>
@@ -396,21 +441,23 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">➕ Nouvelle tâche</div>
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;flex-wrap:wrap;">
-      <div class="field" style="margin:0;"><input type="text" id="task-in" placeholder="Ajouter une tâche..." onkeydown="if(event.key==='Enter')addTask()"></div>
-      <div><select id="task-prio" style="width:110px;">
-        <option value="high">🔴 Urgent</option>
-        <option value="med" selected>🟡 Normal</option>
-        <option value="low">⚪ Faible</option>
-      </select></div>
-      <div><select id="task-cat" style="width:120px;">
-        <option value="business">💼 Business</option>
-        <option value="formation">📚 Formation</option>
-        <option value="contenu">🎬 Contenu</option>
-        <option value="prospection">💬 Prospection</option>
-        <option value="autre">📌 Autre</option>
-      </select></div>
-      <button class="btn btn-primary" onclick="addTask()">Ajouter</button>
+    <div class="add-form-row" style="display:grid;grid-template-columns:1fr;gap:8px;">
+      <div class="field" style="margin:0;"><input class="mobile-input" type="text" id="task-in" placeholder="Ajouter une tâche..." onkeydown="if(event.key==='Enter')addTask()"></div>
+      <div class="add-form-selects" style="display:flex;gap:8px;align-items:center;">
+        <select id="task-prio" style="flex:1;min-width:110px;">
+          <option value="high">🔴 Urgent</option>
+          <option value="med" selected>🟡 Normal</option>
+          <option value="low">⚪ Faible</option>
+        </select>
+        <select id="task-cat" style="flex:1;min-width:120px;">
+          <option value="business">💼 Business</option>
+          <option value="formation">📚 Formation</option>
+          <option value="contenu">🎬 Contenu</option>
+          <option value="prospection">💬 Prospection</option>
+          <option value="autre">📌 Autre</option>
+        </select>
+        <button class="btn btn-primary" onclick="addTask()">Ajouter</button>
+      </div>
     </div>
   </div>
   <div class="filters" id="taskFilters">
@@ -431,7 +478,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="card mb20">
     <div class="card-title">➕ Nouvelle idée</div>
     <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;">
-      <div class="field" style="margin:0;"><input type="text" id="cnt-in" placeholder="Ex: Comment j'ai gagné 100€ à 15 ans..." onkeydown="if(event.key==='Enter')addContent()"></div>
+      <div class="field" style="margin:0;"><input type="text" class="mobile-input" id="cnt-in" placeholder="Ex: Comment j'ai gagné 100€ à 15 ans..." onkeydown="if(event.key==='Enter')addContent()"></div>
       <div><select id="cnt-plat" style="width:120px;">
         <option value="tt">🎵 TikTok</option>
         <option value="ig">📸 Instagram</option>
@@ -464,7 +511,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
   <div class="card mb20">
     <div class="card-title">➕ Nouvel objectif</div>
     <div style="display:grid;grid-template-columns:1fr 110px 110px auto;gap:10px;align-items:end;">
-      <div class="field" style="margin:0;"><input type="text" id="obj-title" placeholder="Ex: 1000€ de CA ce mois"></div>
+      <div class="field" style="margin:0;"><input type="text" class="mobile-input" id="obj-title" placeholder="Ex: 1000€ de CA ce mois"></div>
       <div class="field" style="margin:0;"><label>Actuel</label><input type="number" id="obj-cur" placeholder="0" min="0"></div>
       <div class="field" style="margin:0;"><label>Objectif</label><input type="number" id="obj-tgt" placeholder="100" min="1"></div>
       <button class="btn btn-primary" onclick="addObj()">Ajouter</button>
@@ -573,24 +620,14 @@ const defaultPlan = {
   }
 };
 
-// Load DB - planning stored separately for iOS PWA reliability
 let DB = JSON.parse(localStorage.getItem('thibault-v3') || JSON.stringify({
   tracker:[], stats:[], briefs:[], tasks:[], content:[], objectifs:[],
-  abonnes:{tt:null,ig:null}, planning: null
+  abonnes:{tt:null,ig:null}, planning: null, top3:[]
 }));
-
-// Restore planning: check dedicated key first, then DB, then default
 (function(){
-  try {
-    const savedPlanning = localStorage.getItem('thibault-planning');
-    if(savedPlanning) {
-      DB.planning = JSON.parse(savedPlanning);
-    } else if(!DB.planning) {
-      DB.planning = JSON.parse(JSON.stringify(defaultPlan));
-    }
-  } catch(e) {
-    DB.planning = JSON.parse(JSON.stringify(defaultPlan));
-  }
+  try{ const sp=localStorage.getItem('thibault-planning'); if(sp) DB.planning=JSON.parse(sp); }catch(e){}
+  if(!DB.planning) DB.planning=JSON.parse(JSON.stringify(defaultPlan));
+  if(!DB.top3) DB.top3=[];
 })();
 
 let statsFilter='3j', vuesMode='both', taskFilter='all', contentFilter='all';
@@ -610,18 +647,8 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 function save(){
-  try {
-    localStorage.setItem('thibault-v3', JSON.stringify(DB));
-    // Save planning separately - extra insurance for iOS PWA
-    localStorage.setItem('thibault-planning', JSON.stringify(DB.planning));
-  } catch(e) {
-    // localStorage full - clear old data and retry
-    try {
-      localStorage.removeItem('thibault-v3');
-      localStorage.setItem('thibault-v3', JSON.stringify(DB));
-      localStorage.setItem('thibault-planning', JSON.stringify(DB.planning));
-    } catch(e2) { console.warn('Save failed:', e2); }
-  }
+  try{ localStorage.setItem('thibault-v3',JSON.stringify(DB)); localStorage.setItem('thibault-planning',JSON.stringify(DB.planning)); }
+  catch(e){ try{ localStorage.removeItem('thibault-v3'); localStorage.setItem('thibault-v3',JSON.stringify(DB)); }catch(e2){} }
 }
 
 // ===== NAV =====
@@ -631,7 +658,7 @@ function showPage(id){
   document.getElementById('page-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>{if(n.getAttribute('onclick').includes("'"+id+"'"))n.classList.add('active');});
   if(id==='stats') setTimeout(()=>updateCharts(getStatsFiltered()),100);
-  if(id==='brief'){renderBriefTasks();renderYday();}
+  if(id==='brief'){renderBriefTasks();renderYday();renderTop3();}
   closeSidebar();
 }
 
@@ -738,12 +765,14 @@ async function generateIdeas(){
   btn.disabled=true; btn.textContent='⏳ Génération...'; status.textContent='';
   document.getElementById('aiIdeasList').innerHTML='<div class="empty">Génération en cours...</div>';
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const _k=localStorage.getItem('archipel_api_key')||'';
+    const resp=await fetch('https://dashboard-thibault.vercel.app/api/claude',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
+        _apiKey:_k,
         messages:[{role:'user',content:`Tu es un expert en création de contenu pour les réseaux sociaux (TikTok et Instagram). 
 Génère exactement 5 idées de vidéos/posts percutants pour Thibault, 15 ans, qui vend une formation business en ligne appelée L'Archipel (marketing digital, revenus en ligne, IA) ciblant les 13-25 ans.
 Les idées doivent être virales, accrocheuses, adaptées à TikTok/Reels.
@@ -1039,10 +1068,7 @@ function savePlanEdit(){
   const type=document.getElementById('edit-type').value;
   if(!DB.planning.cells[hour]) DB.planning.cells[hour]=Array(7).fill({t:'pw',c:'—'}).map(x=>({...x}));
   DB.planning.cells[hour][day]={t:type,c:content};
-  save();
-  // Extra: save planning right now separately  
-  try { localStorage.setItem('thibault-planning', JSON.stringify(DB.planning)); } catch(e){}
-  renderPlanning(); closePlanModal();
+  save(); renderPlanning(); closePlanModal();
 }
 
 // ===== UTILS =====
@@ -1050,7 +1076,7 @@ function renderAll(){
   renderAbonnes(); renderTrackerKPIs(); renderTrackerHist();
   renderStatsKPIs(); renderTasks(); renderContent();
   renderObjectifs(); renderPlanning(); renderBriefTasks();
-  renderYday(); renderLastBrief();
+  renderYday(); renderLastBrief(); renderTop3();
 }
 
 function showConfirm(id){
@@ -1062,6 +1088,117 @@ function fmtN(n){if(!n)return'0';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=10
 function formatDate(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short'});}
 function fmtDateS(d){if(!d)return'';return new Date(d+'T12:00:00').toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
 function getWeek(d){const date=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));date.setUTCDate(date.getUTCDate()+4-(date.getUTCDay()||7));const y=new Date(Date.UTC(date.getUTCFullYear(),0,1));return Math.ceil((((date-y)/86400000)+1)/7);}
+
+// ===== TOP 3 =====
+function renderTop3(){
+  var el=document.getElementById('top3List');
+  if(!el) return;
+  if(!DB.top3.length){
+    el.innerHTML='<div class="top3-empty">Aucune priorite definie — clique sur + Ajouter</div>';
+    return;
+  }
+  var html='';
+  DB.top3.forEach(function(item,i){
+    var done=item.done;
+    html+='<div class="top3-item'+(done?' done-item':'')+'">'+
+      '<div class="top3-num">'+(i+1)+'</div>'+
+      '<div class="top3-check'+(done?' done':'')+'" onclick="toggleTop3('+i+')">'+(done?'&#10003;':(i+1))+'</div>'+
+      '<div class="top3-text'+(done?' done':'')+'">'+escH(item.text)+'</div>'+
+      '<div class="top3-actions">'+
+        '<button class="top3-btn" onclick="reportTop3('+i+')" title="Reporter">&#8629;</button>'+
+        '<button class="top3-btn" onclick="removeTop3('+i+')" title="Retirer">&times;</button>'+
+      '</div></div>';
+  });
+  el.innerHTML=html;
+  DB.top3.forEach(function(item){
+    if(item.taskId){
+      var t=DB.tasks.find(function(t){return t.id===item.taskId;});
+      if(t&&t.done!==item.done){t.done=item.done;t.doneDate=item.done?new Date().toISOString().split('T')[0]:null;}
+    }
+  });
+}
+
+function toggleTop3(idx){
+  if(!DB.top3[idx]) return;
+  DB.top3[idx].done=!DB.top3[idx].done;
+  if(DB.top3[idx].taskId){
+    var t=DB.tasks.find(function(t){return t.id===DB.top3[idx].taskId;});
+    if(t){t.done=DB.top3[idx].done;t.doneDate=t.done?new Date().toISOString().split('T')[0]:null;}
+  }
+  save(); renderTop3(); renderTasks();
+}
+
+function removeTop3(idx){
+  DB.top3.splice(idx,1);
+  save(); renderTop3(); renderPickerList();
+}
+
+function reportTop3(idx){
+  var item=DB.top3.splice(idx,1)[0];
+  item.done=false;
+  DB.top3.push(item);
+  save(); renderTop3();
+}
+
+function toggleTop3Picker(){
+  var p=document.getElementById('top3Picker');
+  var open=p.classList.contains('open');
+  p.classList.toggle('open',!open);
+  if(!open) renderPickerList();
+}
+
+function renderPickerList(){
+  var el=document.getElementById('top3PickerList');
+  if(!el) return;
+  var today=new Date().toISOString().split('T')[0];
+  var avail=DB.tasks.filter(function(t){
+    if(t.done&&t.doneDate&&t.doneDate<today) return false;
+    return true;
+  });
+  if(!avail.length){
+    el.innerHTML='<div style="font-family:DM Mono,monospace;font-size:11px;color:var(--muted);padding:10px;">Ajoute des taches dans onglet Taches</div>';
+    return;
+  }
+  var selIds=DB.top3.filter(function(i){return i.taskId;}).map(function(i){return i.taskId;});
+  var pL={high:'🔴',med:'🟡',low:'⚪'};
+  var html='';
+  avail.forEach(function(t){
+    var sel=selIds.includes(t.id);
+    html+='<div class="top3-pick-item'+(sel?' selected':'')+'" onclick="addTop3FromTask('+t.id+')">'+
+      '<span class="pbadge">'+(pL[t.priority]||'')+'</span>'+
+      '<span style="flex:1">'+escH(t.text)+'</span>'+
+      (sel?'<span style="color:var(--cash);font-size:11px;">&#10003;</span>':'')+
+    '</div>';
+  });
+  el.innerHTML=html;
+}
+
+function addTop3FromTask(taskId){
+  if(DB.top3.find(function(i){return i.taskId===taskId;})){
+    DB.top3=DB.top3.filter(function(i){return i.taskId!==taskId;});
+    save(); renderTop3(); renderPickerList(); return;
+  }
+  if(DB.top3.length>=3){alert('Maximum 3 priorites.'); return;}
+  var t=DB.tasks.find(function(t){return t.id===taskId;});
+  if(!t) return;
+  DB.top3.push({text:t.text,taskId:t.id,done:t.done||false});
+  save(); renderTop3(); renderPickerList();
+}
+
+function addTop3FromInput(){
+  var inp=document.getElementById('top3NewInput');
+  var text=inp.value.trim(); if(!text) return;
+  if(DB.top3.length>=3){alert('Maximum 3 priorites.'); return;}
+  var taskId=Date.now();
+  DB.tasks.push({id:taskId,text:text,priority:'high',cat:'business',done:false,doneDate:null,ts:taskId});
+  DB.top3.push({text:text,taskId:taskId,done:false});
+  inp.value='';
+  save(); renderTop3(); renderTasks(); renderPickerList();
+}
+
+function escH(t){return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+// ===== END TOP 3 =====
+
 </script>
 </body>
 </html>
