@@ -477,19 +477,21 @@ tr:hover td{background:rgba(255,255,255,.02);}
   </div>
   <div class="card mb20">
     <div class="card-title">➕ Nouvelle idée</div>
-    <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:end;">
+    <div class="add-form-row" style="display:grid;grid-template-columns:1fr;gap:8px;">
       <div class="field" style="margin:0;"><input type="text" class="mobile-input" id="cnt-in" placeholder="Ex: Comment j'ai gagné 100€ à 15 ans..." onkeydown="if(event.key==='Enter')addContent()"></div>
-      <div><select id="cnt-plat" style="width:120px;">
-        <option value="tt">🎵 TikTok</option>
-        <option value="ig">📸 Instagram</option>
-        <option value="both">📱 Les deux</option>
-      </select></div>
-      <div><select id="cnt-status" style="width:110px;">
-        <option value="idea">💭 Idée</option>
-        <option value="todo">⏳ À faire</option>
-        <option value="done">✅ Publié</option>
-      </select></div>
-      <button class="btn btn-primary" onclick="addContent()">Ajouter</button>
+      <div class="add-form-selects" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <select id="cnt-plat" style="flex:1;min-width:110px;">
+          <option value="tt">🎵 TikTok</option>
+          <option value="ig">📸 Instagram</option>
+          <option value="both">📱 Les deux</option>
+        </select>
+        <select id="cnt-status" style="flex:1;min-width:100px;">
+          <option value="idea">💭 Idée</option>
+          <option value="todo">⏳ À faire</option>
+          <option value="done">✅ Publié</option>
+        </select>
+        <button class="btn btn-primary" onclick="addContent()">Ajouter</button>
+      </div>
     </div>
   </div>
   <div class="filters" id="contentFilters">
